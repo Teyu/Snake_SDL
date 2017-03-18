@@ -1,5 +1,5 @@
 #ifndef SNAKE_H
-	#define SNAKE_H
+#define SNAKE_H
 
 #include <SDL.h>
 #include <vector>
@@ -7,18 +7,19 @@
 #include <array>
 using namespace std;
 
+enum direction{up, down, right, left};
+
 class CSnake
 {
 public:
-	CSnake(){ length = 0; d = right; prevD = up; size = 0;} //Konstruktor
-	void init(int Px, int Py, int len, int s, string dir); 
+    CSnake(){ length = 0; d = direction::right; prevD = direction::up; size = 0;}
+    void init(uint Px, uint Py, int len, int s, direction dir);  //TODO: s?
 	void move(); 
-	void changeDirection(int k);
+    void changeDirection(int k); //TODO: k? (besser: übergebe direction)
 	void grow();
 	void destroy();
 	vector<SDL_Rect> getPos() const{return Pos;} 
 
-	enum direction{up, down, right, left};
 	direction getDir() {return d;}
 	direction getPrevD() {return prevD;}
 
@@ -27,9 +28,9 @@ protected:
 
 private: 
 	int size; 
-	direction d;
-	direction prevD;
-	vector<SDL_Rect> Pos;
+    direction d; //TODO: rename dir
+    direction prevD; //TODO: rename prevDir
+    vector<SDL_Rect> Pos; //TODO: rename
 };
 
 #endif

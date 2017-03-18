@@ -9,78 +9,48 @@ CFood::CFood()
 	Pos.h = 0; 
 	size = 0;
 
-	//Zufallsgenerator: WICHTIG, DIESER SOLLTE NUR EINMAL GENERIERT WERDEN,
-	//SONST WIRD IMMER DIE GLEICHE ZUFALLSZAHL ERZEUGT!!!!!!!!!!!!!!!!!
 	time_t t;
-	srand( time(&t) );}
-
-/**************************************************************************************************
-Setzt die Position von Food und korrigiert ggf.ungültige übergebene Parameter
-*/
-
-void CFood::setPos(int x, int y)
-{
-	//Ist die übergebene Position im gültigen Bereich, ersetze die alte durch die neue:
-	if (((x >= 0) && (x <= 800 - size)) && ((y >= 0) && (y <= 600 - size)))
-	{
-		Pos.x = x;
-		Pos.y = y;
-	}else
-	{
-	//korrigiere die Position, wenn sie nicht in einem gültigen Bereich liegt:
-	if (x < 0)
-	{
-		Pos.x = 0;
-	}else if (x > 800 - size)
-	{
-		Pos.x = 800 - size;
-	}
-	if (y < 0)
-	{
-		Pos.x = 0;
-	}else if (y > 600 - size)
-	{
-		Pos.x = 600 - size;
-	}
-	}
-
+    srand( time(&t) );
 }
 
 /**************************************************************************************************
-Ändert die Größe von Food
+set food position on screen, invalid parameters are truncated to screen borders
 */
 
-void CFood::setSize(int newSize)
+void CFood::setPos(uint x, uint y)
 {
-	//Lege eine Mindestgröße fest:
-	if (newSize > 0)
-	{
-		size = newSize;
-	}else
-	{
-		size = 1; //Mindestgröße
-	}
+    Pos.x = x > 800 - size ? 800 - size : x;
+    Pos.y = y > 600 - size ? 600 - size : y;
+}
 
+/**************************************************************************************************
+set food size
+*/
+
+void CFood::setSize(uint newSize)
+{
+    size = newSize > 0 ? newSize: 1;
 	Pos.h = size;
 	Pos.w = size;
 }
 
 /**************************************************************************************************
-Setzt eine zufällige Position für Food, 
-allerdings nur, wenn noch keines existiert!
+generates a random position, if food is not alive. Returns true if new food has been generated, otherwise false
 */
 
-void CFood::spawn()
+bool CFood::spawn()
 {
-	if (isAlive == false)
-	{
+    if (!isAlive)
+    {
+        int Posx = (rand() % (800/size - 1))*size ;
+        int Posy = (rand() % (600/size - 1))*size ;
 
-	//Position zufällig bestimmen:
-	int Posx = (rand() % (800/size - 1))*size ; //Das Ergebnis muss ein Vielfaches von size sein
-	int Posy = (rand() % (600/size - 1))*size ;
+        setPos(Posx, Posy);
 
-	setPos(Posx, Posy);
+        isAlive = true;
 
-	isAlive = true;
+        return true;
 	}
+
+    return false;
 }

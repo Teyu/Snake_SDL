@@ -1,18 +1,18 @@
 #ifndef TIMER_H
-	#define TIMER_H
+#define TIMER_H
 
 #include <SDL.h>
 
 class CTimer
 {
 public:
-	CTimer(); //Konstruktor
+    CTimer();
 	void update();
 	float GetElapsed() { return m_fElapsed;}
 private:
-	float m_fElapsed; //vergangene Zeit seit dem letzten update() Aufruf
-	float m_fCurTime; //aktuelle Zeit
-	float m_fLastTime; //Zeit des letzten update() Aufrufs
+    float m_fElapsed;
+    float m_fCurTime;
+    float m_fLastTime;
 };
 
 #endif

@@ -1,26 +1,24 @@
 #include "Menu.h"
 
 /**************************************************************************************************
-fragt die Anzahl der Spieler ab und gibt diese zurück
+returns the number of players
 */
 
 int CMenu::checkbackPlayers()
 {
-	cout << "Gebe die Anzahl der Spieler ein ( 1 , 2 , 3 ) : " ;
+    cout << "Enter the number of players ( 1 , 2 , 3 ) : " ;
 	cin >> input;
 	while ( (input != "1") && (input != "2") && (input != "3"))
 	{
-		cout << "Ung\x81ltige Eingabe!" << endl;
+        cout << "invalid input!" << endl;
 		cin >> input;
 	}
 	
-
 	return atoi(input.c_str()); //wandelt string in int um
 }
 
 /**************************************************************************************************
-fragt die Namen der Spieler ab und gibt diese zurück
-AOP = Anzahl der Spieler
+returns the players' names
 */
 
 vector<string> CMenu::checkbackNames(int AOP)
@@ -28,8 +26,7 @@ vector<string> CMenu::checkbackNames(int AOP)
 	vector<string> output;
 	for (int i = 0; i < AOP; i++)
 	{
-		cout << "Spieler " << i+1 << ", bitte gib deinen Namen ein (oder \"bot\" f" << "\x81" 
-			<< "r einen KI-Gegner) : " ;
+        cout << "Player " << i+1 << ", please enter your name (type \"bot\" for a computerized enemy) : " ;
 		cin >> input;
 		output.push_back(input);
 	}
@@ -38,37 +35,37 @@ vector<string> CMenu::checkbackNames(int AOP)
 }
 
 /**************************************************************************************************
-fragt das Spieltempo ab und gibt dieses zurück
+returns the game tempo
 */
 
 float CMenu::checkbackTempo()
 {
-	cout << "Geschwindigkeit: (l)angsam , (n)normal, (s)chnell : ";
+    cout << "game tempo: (s)low , (n)normal, (f)ast : ";
 	cin >> input;
-		while ( (input != "l") && (input != "n") && (input != "s"))
+        while ( (input != "s") && (input != "n") && (input != "f"))
 	{
-		cout << "Ung\x81ltige Eingabe!" << endl;
+        cout << "invalid input!" << endl;
 		cin >> input;
 	}
-	if (input == "l")
+    if (input == "s")
 	{
 		return 0.075f;
 	} else if (input == "n")
 	{
 		return 0.05f;
-	} else if (input == "s")
+    } else if (input == "f")
 	{
 		return 0.025f;
 	}
 }
 
 /**************************************************************************************************
-gibt dem Spieler aus, dass das Spiel gestartet wird
+displays the start of the game
 */
 
 void CMenu::gameStart()
 {
-	cout << endl << "Das Spiel wird gestartet ";
+    cout << endl << "The game is starting ";
 	for (int i= 0; i< 3 ; i++)
 	{
 		SDL_Delay(500);
@@ -79,49 +76,48 @@ void CMenu::gameStart()
 }
 
 /**************************************************************************************************
-gibt dem Spieler eine Wertung aus und öffnet ein Menü
-in dem er Einstellungen an der Spieleranzahl und dem Tempo vornehmen kann
-Rückgabewert: gibt false zurück, wenn das Spiel neu gestartet werden soll
+displays a feedback to the player and opens a menu to edit settings and/or to restart the game
 */
 
 bool CMenu::gameOver(bool &init, vector<CPlayer> P ,float &Temp)
+//TODO: funktion startAgain(), die zurückgibt ob neu gestartet werden soll
+//TODO: funktion update(), die Player den Einstellungen entsprechend updated
 {
 	cout << "GAME OVER!" << endl << endl;
 
 	for (int p = 0; p < P.size(); p++)
 	{
-		cout << P[p].name << " hat " << P[p].getPoints()
-		<< " Fr" << "\x81" << "chte eingesammelt" << endl;
+        cout << P[p].name << " selected " << P[p].getPoints()
+        << " fruits!" << endl;
 	}
 	cout << endl;
 
-	cout << "(n)ochmal  (g)eschwind. " << "\x84" << "ndern  (e)instellungen   (b)eenden" << endl;
+    cout << "(r)estart  (t)empo  (s)ettings  (q)uit" << endl;
 	cin >> input;
 
-	//Ungültige Eingabe?
-	while ((input != "n") && (input != "g") && (input != "e") && (input != "b"))
+    while ((input != "r") && (input != "t") && (input != "s") && (input != "q"))
 	{
-		cout << "Ung\x81ltige Eingabe" << endl;
+        cout << "invalid input" << endl;
 		cin >> input;
 	}
 	
-	if (input == "n")
+    if (input == "r")
 	{
 		gameStart();
-		init = false;
+        init = false; //TODO: remove
 		return false;
-	} else if (input == "b")
+    } else if (input == "q")
 	{
 		return true;
-	} else if (input == "g")
+    } else if (input == "t")
 	{
 		Temp = checkbackTempo();
 		gameStart();
-		init = false;
+        init = false; //TODO: remove
 		return false;
-	} else if (input == "e")
+    } else if (input == "s")
 	{
-		init = true;
+        init = true; //TODO: remove (s.a. update)
 		return false;
 	}
 }

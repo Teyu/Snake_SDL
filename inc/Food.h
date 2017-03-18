@@ -1,5 +1,5 @@
 #ifndef FOOD_H
-	#define FOOD_H
+#define FOOD_H
 
 #include <SDL.h>
 #include <ctime>
@@ -10,18 +10,18 @@ using namespace std;
 class CFood
 {
 public:
-	CFood(); //Konstruktor
-	SDL_Rect getPos() { return Pos;} //Gebe an den Screen zum Zeichnen weiter
-	void setSize(int newSize);
-	void spawn();
-	void destroy() {isAlive= false;}	
+    CFood();
+    SDL_Rect getPos() { return Pos;}
+    void setSize(uint newSize);
+    bool spawn();
+    void destroy() {isAlive = false;}
 
 private:
 	SDL_Rect Pos;
 	int size;
-	bool isAlive; //true, solange das Futter noch nicht gegessen wurde
+    bool isAlive;
 
-	void setPos(int x, int y);
+    void setPos(uint x, uint y);
 };
 
 #endif

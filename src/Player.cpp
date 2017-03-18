@@ -1,60 +1,54 @@
 #include "Player.h"
 
 /**************************************************************************************************
-Initialisiert die Membervariablen, sowie die Basisklasse CSnake
+initializes member variables
 */
 
-void CPlayer::Init(int KeyL, int KeyR, int startPosX, int startPosY, string startDir, int res)
+void CPlayer::Init(int KeyL, int KeyR, int startPosX, int startPosY, direction startDir, int res)
 {
-	KeyLock = false; //dient dazu, dass Snake nur einmal die Richtung ändert, wenn man
-		//eine Taste drückt. Andernfalls würde er während der ganzen Zeit, die man die Taste gedrückt hält,
-		//die Richtung ändern -> sogenanntes "Autofire"
-	growLock = false; //analog für das Wachsen von Snake, beim Aufsammeln von Früchten
+    KeyLock = false;
+    growLock = false;
 	Points = 0;
 	length = 0;
 	KeyLeft = KeyL;
 	KeyRight = KeyR;
 
-	//initialisiere Snake:
-	//const int startLength = 5;
-
-	//ZUM TESTEN:
-	int startLength = 5;
-
-	init(startPosX, startPosY, startLength, res, startDir); 
-
+    int startLength = 5;
+    init(startPosX, startPosY, startLength, res, startDir); //TODO: rename Init and explicitly call CSnake::Init (parameter sollten nicht notwendig sein)
 }
 
 /**************************************************************************************************
-Aktualisiert die KeyBoardeingaben und ändert entsprechend die Richtung von Snake
+checks keyboard input and updates direction of snake
 */
 
 void CPlayer::Update()
 {
 
-if (KI == false)
-{
-	KeyBoard.update();
+    if (KI == false) // TODO: remove wenn CBot implementiert
+    {
+        KeyBoard.update();
 
-	if ((KeyBoard.KeyDown(KeyRight)) && (KeyLock == false))
-		{
-			changeDirection(KeyRight);
-			KeyLock = true;
-		}
-		if ((KeyBoard.KeyDown(KeyLeft)) && (KeyLock == false))
-		{
-			changeDirection(KeyLeft);
-			KeyLock = true;
-		}
-		if ((KeyBoard.KeyDown(KeyLeft) == false) && (KeyBoard.KeyDown(KeyRight) == false))
-		{
-			KeyLock = false;
-		}
-}
+        if (!KeyLock)
+        {
+            if (KeyBoard.KeyDown(KeyRight))
+            {
+                changeDirection(KeyRight);
+            }
+            if (KeyBoard.KeyDown(KeyLeft))
+            {
+                changeDirection(KeyLeft);
+            }
+            KeyLock = true;
+        }
+        if ((!KeyBoard.KeyDown(KeyLeft)) && (!KeyBoard.KeyDown(KeyRight)))
+        {
+            KeyLock = false;
+        }
+    }
 }
 
 /**************************************************************************************************
-Snake wächst und seine Punktzahl erhöht sich
+let Snake grow and gain points
 */
 
 void CPlayer::growSnake()

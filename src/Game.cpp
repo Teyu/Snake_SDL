@@ -1,121 +1,112 @@
 #include "Game.h"
 
 /**************************************************************************************************
-Initialisiert die Membervariablen
+initialize member variables
 */
 
-void CGame::Init(int res)
+void CGame::Init(int resolution)
 {
-if (doInit) 
-{
-	//Initialisiere Spieleranzahl:
-	Players = Menu.checkbackPlayers(); //gibt einen Wert im gültigen Bereich zurück
+    if (doInit)
+    {
+        Players = Menu.checkbackPlayers(); //TODO: checkbackPlayers should return std::vector<CPlayer>
+        Names = Menu.checkbackNames(Players); //TODO: can be removed than
+        gameTempo = Menu.checkbackTempo();
 
-	Names = Menu.checkbackNames(Players);
+        Menu.gameStart();
+    }
 
-	//Initialisiere Spieltempo:
-	gameTempo = Menu.checkbackTempo();
+    isColl = false;
+    UTurn = false;
 
-	Menu.gameStart();
-}
-//TEST:
-isColl = false;
-UTurn = false;
-
-	//Initialisiere die Spieler:
+    //TODO: s.o.
 	for (int i = 0; i < Players; i++)
 	{
 		CPlayer P;
 		Player.push_back(P);
 		Player[i].name = Names[i];
+        //TODO: new function: setupStartPositions
 		const int startLength = 5;
 		switch (i)
 		{
 		case 0:  //Spieler 1 startet in der linken oberen Ecke
-			Player[i].Init(SDLK_LEFT, SDLK_RIGHT,0,3*res,"right", res); 
+            Player[i].Init(SDLK_LEFT, SDLK_RIGHT,0,3*resolution, direction::right, resolution);
 			//Er steuert mit den Pfeiltasten links/rechts
 			break;
 		case 1: //Spieler 2 startet am unteren Bildschirmrand in der Mitte
-			Player[i].Init(SDLK_a, SDLK_d, 400-res*startLength, 600-res, "right", res);
+            Player[i].Init(SDLK_a, SDLK_d, 400-resolution*startLength, 600-resolution, direction::right, resolution);
 			//Er steuert mit A und D
 			break;
 		case 2: //Spieler 3 startet am rechten Rand in der Mitte 
-			Player[i].Init(SDLK_k, SDLK_l,800-res*startLength, 300-res, "left", res);
+            Player[i].Init(SDLK_k, SDLK_l,800-resolution*startLength, 300-resolution, direction::left, resolution);
 			//Er steuert mit K und L
 			break;
 		}
-		SPix.push_back(Player[i].getPos());
+        SPix.push_back(Player[i].getPos()); //TODO: wird SPix benötigt?
 	} 	
 	SnakeTimer = 0.0f;
 	for (int i=0; i < Players; i++)
 	{
 		if (Names[i] == "bot")
 		{
-			Player[i].setKI(true);
+            Player[i].setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
 		}
 	}
 
 
-	//Intialisiere die Auflösung
-	//Die Auflösung muss ein Teiler von 800 und 600 sein:
-	if (((800%res) !=0) || ((600%res) !=0))
+    // TODO: new function setResolution
+    //TODO: remove magic numbers 800 und 600
+    if (((800%resolution) !=0) || ((600%resolution) !=0))
 	{
-		res = 10; //lege ansonsten eine Standardauflösung fest
+        m_resolution = 10;
 	} else
 	{
-		resolution = res;
+        m_resolution = resolution;
 	}
 
-	//Initialisiere das Futter:
+    // TODO: new function initFood
+    Food.resize(Players);
 	for (int i=0; i < Players; i++)
-	{	
-		CFood F;
-		Food.push_back(F);
-		Food[i].setSize(res);
+    {
+        Food[i].setSize(resolution);
 	}
 	spawnFood();
 }
 
 /**************************************************************************************************
-Updatet den Timer, die Tastatureingaben und die Position von Snake.
+updates the timer, the keyboard input and the position of the Snakes
 */
 
 void CGame::Update()
 {
-		//update den Timer:
-		timer.update();
+        timer.update();
 
-		//update die Spieler...
-		for (int i = 0; i < Players; i++)
+        for (int i = 0; i < Players; i++)
 		{
 			Player[i].Update();
-			if (Player[i].isKI())
+            if (Player[i].isKI()) // TODO: can be removed, wenn CBot : CSnake
 			{
 				doKI(Player[i]);
 			}
 		}
 
-		//...und ihre Positionen:
 		for (int i = 0; i < Players; i++)
 		{
-			SPix[i] = Player[i].getPos();
+            SPix[i] = Player[i].getPos(); // TODO. nicht notwendig
 		}
 }
 
 /**************************************************************************************************
-Bewegt die Schlangen, lässt Snake wachsen, wenn er mit Essen kollidiert,
-spawnt neues Essen und beendet das Spiel, wenn Schlangen miteinander kollidieren
+coordinates the Players' movements
 */
 
 void CGame::Control()
 {
-		//Snake bewegt sich erst, wenn eine gewisse zeit verstrichen ist:
 		SnakeTimer += timer.GetElapsed();
 		if (SnakeTimer > gameTempo)
 		{
+            //TEST:
 			for (int i = 0; i < Players; i++)
-			{
-				//TEST: 
+            {
 				if ((UTurn == false) || (Player[i].isKI() == false))
 				{
 					Player[i].move();
@@ -131,42 +122,38 @@ void CGame::Control()
 						Utimer = 0;
 						UTurn = false;
 					}
-				} //ENDETEST
+                }
 			}
-		 SnakeTimer = 0.0f; 
-		}
-
-		//Lasse Snake wachsen, wenn er mit Essen kollidiert:
-		//Auch hier ist zu beachten, dass diese Funktion solange aufgerufen wird
-		//wie beide kollidieren, daher gibt es eine Variable growLock in der Klasse CPlayer
+            //ENDETEST
+        SnakeTimer = 0.0f;
+        }
 
 		for (int i = 0; i< Players; i++)
 		{
 			for (int j = 0; j < Players; j++)
 			{
-				if (checkCollFoodSnake(i,j))
+                if (checkCollFoodSnake(i,j)) //TODO: rename checkColl(CFood, CSnake)
 				{
 					Player[i].growSnake();
 					Food[j].destroy();
+                    spawnFood();
 				}
 			}
-		}
-		spawnFood(); //Danache spawne neues Futter
+        }
 
-		//Beende das Spiel, wenn Snake mit sich selbst oder anderen Spielern kollidiert:
-		if (checkCollSnakeSnake())
+        if (checkCollSnakeSnake()) //TODO: rename: checkColl(CSnake, CSnake) and move into loop above
 		{
 			isRunning = false; 
 		}
 }
 
 /**************************************************************************************************
-Überprüft, ob Snake und Food kollidieren
+checks collision of snake and food
 */
 
 bool CGame::checkCollFoodSnake(int Plyr, int Foo)
 {
-	for (int i=0; i < SPix[Plyr].size(); i++)
+    for (int i=0; i < SPix[Plyr].size(); i++) //TODO : replace SPix with actual function call
 		{
 			if ((SPix[Plyr][i].x == Food[Foo].getPos().x) && (SPix[Plyr][i].y == Food[Foo].getPos().y))
 			{
@@ -178,106 +165,69 @@ bool CGame::checkCollFoodSnake(int Plyr, int Foo)
 }
 
 /**************************************************************************************************
-Überprüft, ob Snake mit sich selbst oder anderen Spielern kollidiert
+checks collision of snake with itself or other snakes
 */
 
 bool CGame::checkCollSnakeSnake()
 {
-	//Die Köpfe der Schlangen:
-	vector<SDL_Rect> Heads;
+    vector<SDL_Rect> Heads; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
 	for (int i = 0; i < Players; i++)
 	{
 		Heads.push_back(Player[i].getPos()[Player[i].getPos().size() - 1]);
 	}
 
-	//Kollidieren Köpfe miteinander?
-	if (Players > 1)
-	{
-		for (int i = 1; i < Players; i++)
-		{
-			for (int j = 0; j < i; j++)
-			{
-				if ((Heads[i].x == Heads[j].x) && (Heads[i].y == Heads[j].y))
-				{
-					return true;
-				}
-			}
-		}
-	}
-
-	/*
-	for (int pi = 0; pi < Players; pi++)
-	{
-		for (int p = 0; p < Players; p++) //Kollidiert irgendweiner der Köpfe mit SPieler i?
-		{
-			for (int i = 0; i < SPix[pi].size() - 1; i++)
-			{
-
-				if ((SPix[pi][i].y == Head[p].y) && (SPix[pi][i].x == Head[p].x))
-				{
-					return true;
-				}
-			}	
-		}
-	}*/
-
-	//TEST: eigentlich analog zu oben..
-	for (int i = 0; i < Players; i++)
-		{
-			for (int j = 0; j < Players; j++)
-			{
-				for (int k=0; k < Player[i].getPos().size()-1; k++)
-				{
-					if ((Player[i].getPos()[k].x == Heads[j].x) 
-						&& (Player[i].getPos()[k].y == Heads[j].y))
-					{
-						return true;
-					}
-				}
-			}
-		} //ENDETEST
+    for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit ?
+    {
+        for (int j = 0; j < Players; j++)
+        {
+             for (int k = 0; k < Player[i].getPos().size(); k++)
+             {
+                if ((Player[i].getPos()[k].x == Heads[j].x)
+                    && (Player[i].getPos()[k].y == Heads[j].y)) //TODO: überlade ==operator für Rect
+                {
+                    if (i == j) //its own Head
+                        break;
+                    return true;
+                }
+            }
+        }
+    }
 
 	return false;
 }
 
 /**************************************************************************************************
-Erzeugt Essen an einer zufälligen Position. Dabei wird beachtet, dass diese Position nicht
-mit den Schlangen kollidiert.
+spawns new food at a random "empty" place on screen. The new position is not colliding with any snake
 */
 
 void CGame::spawnFood()
 {
-		for (int j = 0; j < Players; j++)
+        for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit
 		{
-			Food[j].spawn(); 
-		}
-		for (int i = 0; i < Players; i++)
-		{
+            Food[i].spawn();
 			for (int j = 0; j < Players; j++)
 			{
-				while(checkCollFoodSnake(i, j)) //Diese zufällige Position sollte nicht mit Snake kollidieren..
+                while(checkCollFoodSnake(i, j))
 				{
 					Food[j].destroy();
-					Food[j].spawn(); //..ist das der Fall, erzeuge neu
+                    Food[j].spawn();
 				}
 			}
 		}
 }
 
 /**************************************************************************************************
-Beendet das Spiel und wirft eine Abfrage auf die Konsole, ob man nochmal starten möchte.
-Ggf startet das Spiel dann neu
+quits the game, opens the menu and restarts the game or shuts it down based on the users input.
+Returns true if the user wants to end the game, otherwise returns false
 */
 
 bool CGame::Quit()
 {
-	SDL_Delay(700); //Wartet die gegebene Zeit in Millisekunden ab bevor es weiter geht
-	SDL_Quit(); //Die SDL muss zuvor beendet werden, wenn man mit der Konsoleneingabe arbeiten
-				//möchte
+    SDL_Delay(700);
+    SDL_Quit();
 
-	if ((Menu.gameOver(doInit, Player, gameTempo)) == false)
-	{
-		//alles zurücksetzen:
+    if ((Menu.gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
+    {
 		for (int i=0; i < Players; i++)
 		{
 			Player[i].destroy();
@@ -297,34 +247,28 @@ bool CGame::Quit()
 }
 
 /**************************************************************************************************
-Gibt die Position des Futters (an den Screen zum zeichnen) zurück
+returns the position of the food (usually to draw on screen)
 */
 
 vector<SDL_Rect> CGame::getFoodPos()
 {
-	vector<SDL_Rect> tmp;
-	tmp.push_back(Food[0].getPos());
-	for (int i=1; i< Players; i++)
+    vector<SDL_Rect> ret;
+    for (int i=0; i< Players; i++)
 	{
-		tmp.push_back(Food[i].getPos());
+        ret.push_back(Food[i].getPos());
 	}
 
-	return tmp;
+    return ret;
 }
 
-//Überlade != Operator für Instanzen von CPlayer:
+//TODO: move to public interface of CSnake:
 bool operator!=(CPlayer const& lhs, CPlayer const& rhs)
 {
-	//übliche Implementierung:
-	//return ! (lhs==rhs)
-
-	//wenn schon die Längen nicht übereinstimmen können die Spieler nicht gleich sein:
-	if (lhs.getPos().size() != rhs.getPos().size())
+    if (lhs.getPos().size() != rhs.getPos().size()) //TODO: CSnake::getLength
 	{
 		return true;
 	}
 
-	//teste ob die Positionen übereinstimmen:
 	for (int i=0; i < lhs.getPos().size(); i++)
 	{
 		if ((lhs.getPos()[i].x != rhs.getPos()[i].x) || (lhs.getPos()[i].y != rhs.getPos()[i].y))
@@ -334,6 +278,8 @@ bool operator!=(CPlayer const& lhs, CPlayer const& rhs)
 	}
 	return false;
 }
+
+//TODO: move to CBot:
 
 //gibt true zurück, wenn der Bot seine Richtung aufgrund von Kollision ändern muss
 void CGame::doKI( CPlayer &Bot)
@@ -359,21 +305,21 @@ void CGame::doKI( CPlayer &Bot)
 
 	switch(actDir)
 	{
-	case right:
-		Headthen.x +=2*resolution;
-		Heademerg.x += resolution;
+    case direction::right:
+        Headthen.x +=2*m_resolution;
+        Heademerg.x += m_resolution;
 		break;
-	case down:
-		Headthen.y += 2*resolution;
-		Heademerg.y += resolution;
+    case direction::down:
+        Headthen.y += 2*m_resolution;
+        Heademerg.y += m_resolution;
 		break;
-	case left:
-		Headthen.x -= 2*resolution;
-		Heademerg.x -= resolution;
+    case direction::left:
+        Headthen.x -= 2*m_resolution;
+        Heademerg.x -= m_resolution;
 		break;
-	case up:
-		Headthen.y -= 2*resolution;
-		Heademerg.y -= resolution;
+    case direction::up:
+        Headthen.y -= 2*m_resolution;
+        Heademerg.y -= m_resolution;
 		break;
 	}
 
@@ -394,8 +340,8 @@ void CGame::doKI( CPlayer &Bot)
 						//bewege dich in die entgegengesetzte Richtung zur vorigen: ZTurn
 						switch (prevDir)
 						{
-						case right:
-							if (actDir == up)
+                        case direction::right:
+                            if (actDir == direction::up)
 							{
 								Bot.changeDirection(SDLK_RIGHT);
 							}else
@@ -403,8 +349,8 @@ void CGame::doKI( CPlayer &Bot)
 								Bot.changeDirection(SDLK_LEFT);
 							}
 							break;
-						case down:
-							if (actDir == left)
+                        case direction::down:
+                            if (actDir == direction::left)
 							{
 								Bot.changeDirection(SDLK_LEFT);
 							}else
@@ -412,8 +358,8 @@ void CGame::doKI( CPlayer &Bot)
 								Bot.changeDirection(SDLK_RIGHT);
 							}
 							break;
-						case left:
-							if (actDir == up)
+                        case direction::left:
+                            if (actDir == direction::up)
 							{
 								Bot.changeDirection(SDLK_LEFT);
 							}else
@@ -421,8 +367,8 @@ void CGame::doKI( CPlayer &Bot)
 								Bot.changeDirection(SDLK_RIGHT);
 							}
 							break;
-						case up:
-							if (actDir == left)
+                        case direction::up:
+                            if (actDir == direction::left)
 							{
 								Bot.changeDirection(SDLK_RIGHT);
 							} else
@@ -464,73 +410,73 @@ void CGame::doKI( CPlayer &Bot)
 
 						switch (actDir)
 						{
-						case up:
-						case down:
-							tmpR.x += resolution;
-							tmpL.x -= resolution;
+                        case direction::up:
+                        case direction::down:
+                            tmpR.x += m_resolution;
+                            tmpL.x -= m_resolution;
 							while(isFull(tmpR) == false)
 							{
-								tmpR.x += resolution;
+                                tmpR.x += m_resolution;
 								distRight++;
 							}
 							while(isFull(tmpL) == false)
 							{
-								tmpL.x -= resolution;
+                                tmpL.x -= m_resolution;
 								distLeft++;
 							}
 
 							if (distLeft >= distRight)
 							{
-								if (actDir == up)
+                                if (actDir == direction::up)
 								{
 									UDir = SDLK_LEFT;
-								} else if (actDir == down)
+                                } else if (actDir == direction::down)
 								{
 									UDir = SDLK_RIGHT;
 								}
 							} else if (distRight > distLeft)
 							{
-								if (actDir == up)
+                                if (actDir == direction::up)
 								{
 									UDir = SDLK_RIGHT;
-								} else if (actDir == down)
+                                } else if (actDir == direction::down)
 								{
 									UDir = SDLK_LEFT;
 								}
 							}
 
 							break;
-						case right:
-						case left:
-							tmpR.y -= resolution;
-							tmpL.y += resolution;
+                        case direction::right:
+                        case direction::left:
+                            tmpR.y -= m_resolution;
+                            tmpL.y += m_resolution;
 							while(isFull(tmpR) == false)
 							{
-								tmpR.y -= resolution;
+                                tmpR.y -= m_resolution;
 								distRight++;
 							}
 							while (isFull(tmpL) == false)
 							{
-								tmpL.y += resolution;
+                                tmpL.y += m_resolution;
 								distLeft++;
 							}
 
 							
 							if (distLeft >= distRight)
 							{
-								if (actDir == left)
+                                if (actDir == direction::left)
 								{
 									UDir = SDLK_LEFT;
-								} else if (actDir == right)
+                                } else if (actDir == direction::right)
 								{
 									UDir = SDLK_RIGHT;
 								}
 							} else if (distRight > distLeft)
 							{
-								if (actDir == left)
+                                if (actDir == direction::left)
 								{
 									UDir = SDLK_RIGHT;
-								} else if (actDir == right)
+                                } else if (actDir == direction::right)
 								{
 									UDir = SDLK_LEFT;
 								}
@@ -592,10 +538,10 @@ bool CGame::isFreeBothSides()
 {
 	switch(actDir)
 	{
-	case down:
-	case up:
+    case direction::down:
+    case direction::up:
 	//gehe alle Pixel nach rechts durch
-		for (int i = Head.x + resolution; i < 800; i += resolution) 
+        for (int i = Head.x + m_resolution; i < 800; i += m_resolution)
 		{
 		//frage ab, ob eine Pixel-Position auf der rechten Seite besetzt ist:
 			SDL_Rect tmp = Head;
@@ -609,7 +555,7 @@ bool CGame::isFreeBothSides()
 			}
 		}
 	//gehe alle Pixel nach links durch
-		for (int i = 0; i < Head.x; i += resolution)
+        for (int i = 0; i < Head.x; i += m_resolution)
 		{
 			SDL_Rect tmp = Head;
 			tmp.x = i;
@@ -622,10 +568,10 @@ bool CGame::isFreeBothSides()
 			}
 		}
 		break;
-	case right:
-	case left:
+    case direction::right:
+    case direction::left:
 	//gehe alle Pixel nach unten durch
-		for (int i = Head.y + resolution; i < 600; i += resolution) 
+        for (int i = Head.y + m_resolution; i < 600; i += m_resolution)
 		{
 			SDL_Rect tmp = Head;
 			tmp.y = i;
@@ -638,7 +584,7 @@ bool CGame::isFreeBothSides()
 			}
 		}
 	//gehe alle Pixel nach oben durch
-		for (int i = 0; i < Head.y; i += resolution)
+        for (int i = 0; i < Head.y; i += m_resolution)
 		{
 			SDL_Rect tmp = Head;
 			tmp.y = i;
@@ -659,11 +605,11 @@ bool CGame::isFreeOneSide(string side)
 {
 	switch(actDir)
 	{
-	case down:
+    case direction::down:
 	if (side == "right")
 	{
 	//gehe alle Pixel nach links durch
-		for (int i = 0; i < Head.x; i += resolution)
+        for (int i = 0; i < Head.x; i += m_resolution)
 		{
 			SDL_Rect tmp = Head;
 			tmp.x = i;
@@ -675,7 +621,7 @@ bool CGame::isFreeOneSide(string side)
 	} else if (side == "left")
 	{
 		//gehe alle Pixel nach rechts durch
-		for (int i = Head.x + resolution; i < 800; i += resolution) 
+        for (int i = Head.x + m_resolution; i < 800; i += m_resolution)
 		{
 		//frage ab, ob eine Pixel-Position auf der rechten Seite besetzt ist:
 			SDL_Rect tmp = Head;
@@ -687,11 +633,11 @@ bool CGame::isFreeOneSide(string side)
 		}
 	}
 		break;
-	case up: //genauso wie down nur umgekehrt
+    case direction::up: //genauso wie down nur umgekehrt
 		if (side == "right")
 		{
 			//gehe alle Pixel nach rechts durch
-			for (int i = Head.x + resolution; i < 800; i += resolution) 
+            for (int i = Head.x + m_resolution; i < 800; i += m_resolution)
 			{
 			//frage ab, ob eine Pixel-Position auf der rechten Seite besetzt ist:
 				SDL_Rect tmp = Head;
@@ -704,7 +650,7 @@ bool CGame::isFreeOneSide(string side)
 			} else if (side == "left")
 			{
 			//gehe alle Pixel nach links durch
-			for (int i = 0; i < Head.x; i += resolution)
+            for (int i = 0; i < Head.x; i += m_resolution)
 			{
 				SDL_Rect tmp = Head;
 				tmp.x = i;
@@ -715,11 +661,11 @@ bool CGame::isFreeOneSide(string side)
 			}
 			}
 			break;
-	case right:
+    case direction::right:
 		if (side == "right")
 		{
 			//gehe alle Pixel nach unten durch
-			for (int i = Head.y + resolution; i < 600; i += resolution) 
+            for (int i = Head.y + m_resolution; i < 600; i += m_resolution)
 			{
 				SDL_Rect tmp = Head;
 				tmp.y = i;
@@ -731,7 +677,7 @@ bool CGame::isFreeOneSide(string side)
 		} else if (side == "left")
 		{
 			//gehe alle Pixel nach oben durch
-			for (int i = 0; i < Head.y; i += resolution)
+            for (int i = 0; i < Head.y; i += m_resolution)
 			{
 				SDL_Rect tmp = Head;
 				tmp.y = i;
@@ -742,11 +688,11 @@ bool CGame::isFreeOneSide(string side)
 			}
 		}
 		break;
-	case left:
+    case direction::left:
 		if (side == "right")
 		{
 			//gehe alle Pixel nach oben durch
-			for (int i = 0; i < Head.y; i += resolution)
+            for (int i = 0; i < Head.y; i += m_resolution)
 			{
 				SDL_Rect tmp = Head;
 				tmp.y = i;
@@ -758,7 +704,7 @@ bool CGame::isFreeOneSide(string side)
 		} else if (side == "left")
 		{
 			//gehe alle Pixel nach unten durch
-			for (int i = Head.y + resolution; i < 600; i += resolution) 
+            for (int i = Head.y + m_resolution; i < 600; i += m_resolution)
 			{
 				SDL_Rect tmp = Head;
 				tmp.y = i;
@@ -778,8 +724,8 @@ void CGame::goForFood(CFood F, CPlayer& B)
 {
 	switch(actDir) //ACHTUNG: Dies geht nur, solange es nur einen Bot gibt!!!
 	{
-	case left:
-	case right: //der Bot liegt in waagerechter Position
+    case direction::left:
+    case direction::right: //der Bot liegt in waagerechter Position
 		//Ziel: ändere die Richtung sobald die xPos  mit der des Essens übereinstimmt
 		if (Head.x == F.getPos().x)
 		{
@@ -789,7 +735,7 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//Prüfe ob die nächsten 4 Pixel oberhalb frei sind (damit genug Zeit zum ausweichen bleibt)
 				//...
 				bool isfree = true;
-				for (int i = Head.y - 4*resolution; i < Head.y; i += resolution)
+                for (int i = Head.y - 4*m_resolution; i < Head.y; i += m_resolution)
 				{
 					SDL_Rect tmp = Head;
 					tmp.y = i;
@@ -801,10 +747,10 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//...und ändere die Richtung, wenn das der Fall ist:
 				if (isfree)
 				{
-					if (actDir == right)
+                    if (actDir == direction::right)
 					{
 						B.changeDirection(SDLK_LEFT);
-					} else if (actDir == left)
+                    } else if (actDir == direction::left)
 					{
 						B.changeDirection(SDLK_RIGHT);
 					}
@@ -815,7 +761,7 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//Prüfe ob die nächsten 4 Pixel unterhalb frei sind (damit genug Zeit zum ausweichen bleibt)
 				//...
 				bool isfree = true;
-				for (int i = Head.y + resolution; i <= Head.y + 4*resolution ; i += resolution)
+                for (int i = Head.y + m_resolution; i <= Head.y + 4*m_resolution ; i += m_resolution)
 				{
 					SDL_Rect tmp = Head;
 					tmp.y = i;
@@ -827,10 +773,10 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//...und ändere die Richtung, wenn das der Fall ist:
 				if (isfree)
 				{
-					if (actDir == right)
+                    if (actDir == direction::right)
 					{
 						B.changeDirection(SDLK_RIGHT);
-					} else if (actDir == left)
+                    } else if (actDir == direction::left)
 					{
 						B.changeDirection(SDLK_LEFT);
 					}
@@ -838,8 +784,8 @@ void CGame::goForFood(CFood F, CPlayer& B)
 			}
 		}
 		break;
-	case down:
-	case up: //der Bot liegt in senkrechter Position
+    case direction::down:
+    case direction::up: //der Bot liegt in senkrechter Position
 		//Ziel: ändere die Richtung sobald die yPos  mit der des Essens übereinstimmt
 		if (Head.y == F.getPos().y)
 		{
@@ -849,7 +795,7 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//Prüfe ob die nächsten 4 Pixel links frei sind (damit genug Zeit zum ausweichen bleibt)
 				//...
 				bool isfree = true;
-				for (int i = Head.x - 4*resolution; i < Head.x; i += resolution)
+                for (int i = Head.x - 4*m_resolution; i < Head.x; i += m_resolution)
 				{
 					SDL_Rect tmp = Head;
 					tmp.x = i;
@@ -861,10 +807,10 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//...und ändere die Richtung, wenn das der Fall ist:
 				if (isfree)
 				{
-					if (actDir == up)
+                    if (actDir == direction::up)
 					{
 						B.changeDirection(SDLK_LEFT);
-					} else if (actDir == down)
+                    } else if (actDir == direction::down)
 					{
 						B.changeDirection(SDLK_RIGHT);
 					}
@@ -875,7 +821,7 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//Prüfe ob die nächsten 4 Pixel rechts frei sind (damit genug Zeit zum ausweichen bleibt)
 				//...
 				bool isfree = true;
-				for (int i = Head.x + resolution; i <= Head.x + 4*resolution ; i += resolution)
+                for (int i = Head.x + m_resolution; i <= Head.x + 4*m_resolution ; i += m_resolution)
 				{
 					SDL_Rect tmp = Head;
 					tmp.x = i;
@@ -888,10 +834,10 @@ void CGame::goForFood(CFood F, CPlayer& B)
 				//...und ändere die Richtung, wenn das der Fall ist:
 				if (isfree)
 				{
-					if (actDir == up)
+                    if (actDir == direction::up)
 					{
 						B.changeDirection(SDLK_RIGHT);
-					} else if (actDir == down)
+                    } else if (actDir == direction::down)
 					{
 						B.changeDirection(SDLK_LEFT);
 					}

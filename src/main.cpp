@@ -4,54 +4,37 @@ using namespace std;
 
 int main( int argc, char *argv[])
 {
-	//Info:
-	cout << "***************Willkommen beim Multiplayermodus von Snake!***************" << endl
+    cout << "***************Welcome to Multiplayer version of Snake!***************" << endl
+            //TODO: display version
 		<< endl << endl;
-	cout << "Ziel des Spiels:" << endl;
-	cout << "Wer die meisten Fr" << "\x81" << "chte einsammelt gewinnt!" << endl
+    cout << "Goal of the Game:" << endl;
+    cout << "Whoever selects the highest number of fruits wins!" << endl
 		<< endl << endl;
-	cout << "Steuerung: " << endl;
-	cout << "Spieler 1 (gr" << "\x81" << "n) benutzt die Pfeiltasten links/rechts." << endl;
-	cout << "Spieler 2 (blau) benutzt die Tasten A und D." << endl;
-	cout << "Spieler 3 (gelb) benutzt die Tasten L und K." << endl << endl;
+    cout << "Controls: " << endl;
+    cout << "Player 1 (green) uses the keys left and right." << endl;
+    cout << "Player 2 (blue) uses the keys A and D." << endl;
+    cout << "Player 3 (yellow) uses the keys L and K." << endl << endl;
 
 	CScreen Screen;
 
-	//SDL initialisieren: Die Flags geben an welche Teilbereiche initialisiert werden sollen
-	//Hier: Grafik und Timer
 	if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1)
 	{
-		cout << "SDL konnte nicht initialisiert werden!" << endl;
-		cout << "Fehlermeldung: " << SDL_GetError () << endl; //Diese Funktion gibt eine Fehlermeldung 
-		//als string zurück. Da im Hintergrund eine Konsole läuft, kann dies dort ausgegeben werden
-
-
-		//SDL beenden: Die Funktion kümmert sich darum, dass der von mir reservierte Speicher
-		// durch pScreen wieder frei gegeben wird. Dies ist WICHTIG. Dieser Speicher soll nicht
-		// manuell freiegegeben werden
+        cout << "could not initialize SDL!" << endl;
+        cout << "error message: " << SDL_GetError () << endl;
 		SDL_Quit();
 
-		return 0;
+        return 1;
 	}
 
-	//Lasse die Bildschirmausgabe laufen, und prüfe ob dabei alles geklappt hat:
 	if (Screen.runScreen()== false)
 	{
-		cout << "Fehler beim erstellen des Vollbildmodus" << endl;
+        cout << "error occured while running full screen mode" << endl;
 		SDL_Quit();
-		return 0;
+
+        return 1;
 	}
 
-	//ACHTUNG: Achte darauf, dass diese Funktion auf jeden Fall aufgerufen wird! 
-	// Sonst bleibt das Programm womöglich hängen
 	SDL_Quit();
-	return (0);
+    return 0;
 }
-
-/*
-Konfigurationen zum erstellen der Release-Datei:
-	Stelle Unter Verweise/Konfigurationseigenschaften oben links auf Release um
-	Führe dann alle Konfigurationsschritte aus SDL_Test nochmal durch...
-
-*/
 
