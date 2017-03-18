@@ -25,3 +25,7 @@ target_link_libraries(Snake
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(specifySDLpaths)
+
+if(SNAKE_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()

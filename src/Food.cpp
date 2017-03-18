@@ -5,9 +5,9 @@ CFood::CFood()
 	isAlive = false; 
 	Pos.x = 0; 
 	Pos.y = 0; 
-	Pos.w = 0; 
-	Pos.h = 0; 
-	size = 0;
+    Pos.w = 1;
+    Pos.h = 1;
+    size = 1;
 
 	time_t t;
     srand( time(&t) );

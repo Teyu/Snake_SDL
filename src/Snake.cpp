@@ -4,7 +4,7 @@
 /**************************************************************************************************
 initialize length, size and position of snake
 */
-void CSnake::init(uint Px, uint Py, int len, int s, direction dir)
+void CSnake::init(uint Px, uint Py, uint len, uint s, direction dir)
 {
     d = dir;
     length = len >= 2 ? len : 2;
@@ -43,6 +43,7 @@ move snake by one block in given direction
 
 void CSnake::move()
 {
+    SDL_Rect prevPos = Pos[length - 1];
     SDL_Rect Head = Pos[length - 1]; // TODO: remove after m_Head is implemented
 
     switch (d)
@@ -79,7 +80,6 @@ void CSnake::move()
 
     Pos[length - 1] = Head; // TODO: remove after m_Head
 
-    SDL_Rect prevPos = Pos[length - 1];
     for( int i = length-2; i >= 0; i--)
     {
         SDL_Rect tmp = Pos[i];
