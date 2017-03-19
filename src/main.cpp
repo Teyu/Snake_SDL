@@ -1,12 +1,16 @@
-#include "Screen.h"
+#include "Game.h"
 #include <iostream>
+
+#include <SnakeConfig.h>
+
 using namespace std;
 
 int main( int argc, char *argv[])
 {
     cout << "***************Welcome to Multiplayer version of Snake!***************" << endl
-            //TODO: display version
-		<< endl << endl;
+        << endl << endl;
+    cout << "Snake Version " << SNAKE_VERSION_MAJOR << "." << SNAKE_VERSION_MINOR << endl
+        << endl << endl;
     cout << "Goal of the Game:" << endl;
     cout << "Whoever selects the highest number of fruits wins!" << endl
 		<< endl << endl;
@@ -15,26 +19,15 @@ int main( int argc, char *argv[])
     cout << "Player 2 (blue) uses the keys A and D." << endl;
     cout << "Player 3 (yellow) uses the keys L and K." << endl << endl;
 
-	CScreen Screen;
+    CGame Game;
 
-	if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1)
-	{
-        cout << "could not initialize SDL!" << endl;
-        cout << "error message: " << SDL_GetError () << endl;
-		SDL_Quit();
+    Game.Init(10);
+    Game.Run();
+    //Game.Quit(); //TODO: uncomment after restruction (until schleife ?)
 
-        return 1;
-	}
+    g_pFramework->Quit(); //TODO: nach CGame verlagern
+    g_pFramework->Del();
 
-	if (Screen.runScreen()== false)
-	{
-        cout << "error occured while running full screen mode" << endl;
-		SDL_Quit();
-
-        return 1;
-	}
-
-	SDL_Quit();
     return 0;
 }
 

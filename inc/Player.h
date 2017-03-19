@@ -3,7 +3,7 @@
 
 #include <string>
 #include "Snake.h"
-#include "Tastatur.h" //TODO: rename
+#include "Framework.h"
 using namespace std;
 
 class CPlayer: public CSnake
@@ -25,8 +25,7 @@ private:
 	bool growLock;
 	int KeyLeft;
 	int KeyRight;
-	bool KI;
-	CTastatur KeyBoard;
+    bool KI;
 };
 
 #endif

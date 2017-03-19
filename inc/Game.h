@@ -3,7 +3,6 @@
 
 #include "Player.h" 
 #include "Food.h"
-#include "Tastatur.h"
 #include "Timer.h"
 #include "Menu.h"
 #include <string>
@@ -18,12 +17,16 @@ public:
     void Init(int resolution);
 	void Update();
 	void Control();	
+    void Run();
 	bool Quit();
 	void setGameTempo( float newTemp) { gameTempo = newTemp;}
 	vector<vector<SDL_Rect>> getSnakePos() {return SPix;}  
 	vector<SDL_Rect> getFoodPos();
 
  	bool isRunning;
+
+private:
+    void ProcessEvents();
 
 private:	
 	CMenu Menu;

@@ -38,6 +38,15 @@ void CSnake::init(uint Px, uint Py, uint len, uint s, direction dir)
 }
 
 /**************************************************************************************************
+render snake
+*/
+
+void CSnake::Render()
+{
+
+}
+
+/**************************************************************************************************
 move snake by one block in given direction
 */
 

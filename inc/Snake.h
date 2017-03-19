@@ -14,6 +14,7 @@ class CSnake
 public:
     CSnake(){ length = 0; d = direction::right; prevD = direction::up; size = 0;}
     void init(uint Px, uint Py, uint len, uint s, direction dir);  //TODO: s?
+    void Render();
 	void move(); 
     void changeDirection(int k); //TODO: k? (besser: übergebe direction)
 	void grow();

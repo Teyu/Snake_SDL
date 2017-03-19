@@ -13,6 +13,7 @@ public:
     CFood();
     SDL_Rect getPos() { return Pos;}
     void setSize(uint newSize);
+    void Render();
     bool spawn();
     void destroy() {isAlive = false;}
 

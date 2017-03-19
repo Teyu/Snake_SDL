@@ -70,6 +70,58 @@ void CGame::Init(int resolution)
         Food[i].setSize(resolution);
 	}
 	spawnFood();
+
+    g_pFramework->Init(800, 600, 16, false);
+}
+
+/****************************************************************************************************************************************************
+verify if a button is pressed to quit the game
+*/
+
+void CGame::ProcessEvents()
+{
+    SDL_Event Event;
+    if (SDL_PollEvent ( &Event))
+    {
+        switch(Event.type)
+        {
+        case (SDL_QUIT):
+            {
+                isRunning = false;
+            } break;
+        case (SDL_KEYDOWN):
+            {
+                if (Event.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    isRunning = false;
+                }
+            }break;
+        }
+    }
+}
+
+void CGame::Run()
+{
+    while (isRunning)
+    {
+        ProcessEvents();
+
+        g_pFramework->Update();
+        g_pFramework->Clear();
+
+        Update();
+        Control(); //TODO: Control -> Update
+        vector<vector<SDL_Rect>> SnakePos = getSnakePos();
+        vector<SDL_Rect> FoodPos = getFoodPos();
+        g_pFramework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
+        g_pFramework->Flip();
+    }
+
+    if (!Quit())
+    {
+        Init(10);
+        Run();
+    }
 }
 
 /**************************************************************************************************
