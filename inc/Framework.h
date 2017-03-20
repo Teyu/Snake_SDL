@@ -6,7 +6,7 @@
 #include <vector>
 #include "Singleton.h"
 #include "Timer.h"
-//#include "Game.h"
+
 using namespace std;
 
 #define g_pFramework CFramework::Get() //pointer to single entity of CFramework
@@ -14,13 +14,6 @@ using namespace std;
 class CFramework : public TSingleton<CFramework>
 {
 public:
-    //REMOVE LATER:
-    CFramework()
-    {
-        m_pKeystate = SDL_GetKeyState(NULL);
-    }
-    //
-
     bool Init (int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen);
     void Quit();
     void Update();

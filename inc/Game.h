@@ -17,6 +17,7 @@ public:
     void Init(int resolution);
 	void Update();
 	void Control();	
+    void Render();
     void Run();
 	bool Quit();
 	void setGameTempo( float newTemp) { gameTempo = newTemp;}
@@ -52,7 +53,7 @@ private:
 	bool isFreeOneSide(string side);
 	bool isNotFreeBothSides();
 	void doKI(CPlayer &Bot);
-	void goForFood(CFood F, CPlayer& B);
+    void goForFood(CFood& F, CPlayer& B);
 
 	bool isColl;
 	SDL_Rect Head;

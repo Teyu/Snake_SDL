@@ -69,9 +69,19 @@ void CGame::Init(int resolution)
     {
         Food[i].setSize(resolution);
 	}
-	spawnFood();
+    spawnFood();
 
     g_pFramework->Init(800, 600, 16, false);
+}
+
+/**************************************************************************************************
+render Scene
+*/
+
+void CGame::Render()
+{
+    for (size_t i = 0; i < Food.size(); i++)
+        Food[i].Render();
 }
 
 /****************************************************************************************************************************************************
@@ -113,7 +123,10 @@ void CGame::Run()
         Control(); //TODO: Control -> Update
         vector<vector<SDL_Rect>> SnakePos = getSnakePos();
         vector<SDL_Rect> FoodPos = getFoodPos();
+
         g_pFramework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
+
+        Render();
         g_pFramework->Flip();
     }
 
@@ -136,15 +149,15 @@ void CGame::Update()
 		{
 			Player[i].Update();
             if (Player[i].isKI()) // TODO: can be removed, wenn CBot : CSnake
-			{
-				doKI(Player[i]);
+            {
+                doKI(Player[i]);
 			}
 		}
 
 		for (int i = 0; i < Players; i++)
-		{
+        {
             SPix[i] = Player[i].getPos(); // TODO. nicht notwendig
-		}
+        }
 }
 
 /**************************************************************************************************
@@ -196,7 +209,7 @@ void CGame::Control()
         if (checkCollSnakeSnake()) //TODO: rename: checkColl(CSnake, CSnake) and move into loop above
 		{
 			isRunning = false; 
-		}
+        }
 }
 
 /**************************************************************************************************
@@ -265,7 +278,7 @@ void CGame::spawnFood()
                     Food[j].spawn();
 				}
 			}
-		}
+        }
 }
 
 /**************************************************************************************************
@@ -295,7 +308,7 @@ bool CGame::Quit()
 	{
 		isRunning = false;
 		return true;
-	} 
+    }
 }
 
 /**************************************************************************************************
@@ -552,21 +565,22 @@ void CGame::doKI( CPlayer &Bot)
 	}
 
 	if (isColl == false)
-	{
+    {
 		//Wenn die Gefahr einer Kollision nicht besteht, 
 		//lasse den Bot auf Futtersuche gehen:
-		CFood nearest = Food[0]; //Jage dabei das nächstgelegene!
+        CFood *nearest = &Food[0]; //Jage dabei das nächstgelegene!
 		for (int i = 0; i < Players; i++)
 		{
 			if ((Players > 1) &&
 				(abs(Food[i].getPos().x - Head.x) + abs(Food[i].getPos().y - Head.y) 
-				< (abs(nearest.getPos().x - Head.x) + abs(nearest.getPos().y - Head.y))))
+                < (abs(nearest->getPos().x - Head.x) + abs(nearest->getPos().y - Head.y))))
 			{
-				nearest = Food[i];
+                nearest = &Food[i];
 			}
 		}
-		goForFood(nearest, Bot); 
-	}
+        goForFood(*nearest, Bot);
+
+    }
 }
 
 bool CGame::isFull(SDL_Rect Pix)
@@ -772,7 +786,7 @@ bool CGame::isFreeOneSide(string side)
 }
 
 //ZUM TESTEN: EINZELSPIELER BOT
-void CGame::goForFood(CFood F, CPlayer& B)
+void CGame::goForFood(CFood &F, CPlayer& B)
 {
 	switch(actDir) //ACHTUNG: Dies geht nur, solange es nur einen Bot gibt!!!
 	{

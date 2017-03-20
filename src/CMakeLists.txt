@@ -3,6 +3,7 @@ set(SNAKE_SOURCE_FILES
   ${CMAKE_SOURCE_DIR}/src/Game.cpp
   ${CMAKE_SOURCE_DIR}/src/Menu.cpp
   ${CMAKE_SOURCE_DIR}/src/Player.cpp
+  ${CMAKE_SOURCE_DIR}/src/Sprite.cpp
   ${CMAKE_SOURCE_DIR}/src/Snake.cpp
   ${CMAKE_SOURCE_DIR}/src/Framework.cpp
   ${CMAKE_SOURCE_DIR}/src/Timer.cpp

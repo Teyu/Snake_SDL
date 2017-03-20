@@ -5,20 +5,21 @@
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
+#include "Sprite.h"
 using namespace std;
 
 class CFood
 {
 public:
     CFood();
-    SDL_Rect getPos() { return Pos;}
+    SDL_Rect getPos() { return m_Sprite.GetRect();} //REMOVE
     void setSize(uint newSize);
     void Render();
     bool spawn();
     void destroy() {isAlive = false;}
 
 private:
-	SDL_Rect Pos;
+    CSprite m_Sprite;
 	int size;
     bool isAlive;
 

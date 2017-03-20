@@ -1,16 +1,16 @@
 #include "Food.h"
+#include <SnakeConfig.h>
 
 CFood::CFood() 
 { 
 	isAlive = false; 
-	Pos.x = 0; 
-	Pos.y = 0; 
-    Pos.w = 1;
-    Pos.h = 1;
+    m_Sprite.SetPos(0,0);
     size = 1;
 
 	time_t t;
     srand( time(&t) );
+
+    m_Sprite.Load(getDataDir() + "/cherryAtNight.bmp");
 }
 
 /**************************************************************************************************
@@ -19,7 +19,7 @@ render food
 
 void CFood::Render()
 {
-
+    m_Sprite.Render();
 }
 
 /**************************************************************************************************
@@ -28,19 +28,18 @@ set food position on screen, invalid parameters are truncated to screen borders
 
 void CFood::setPos(uint x, uint y)
 {
-    Pos.x = x > 800 - size ? 800 - size : x;
-    Pos.y = y > 600 - size ? 600 - size : y;
+    uint posX = x > 800 - size ? 800 - size : x;
+    uint posY = y > 600 - size ? 600 - size : y;
+    m_Sprite.SetPos((float) posX, (float) posY);
 }
 
 /**************************************************************************************************
 set food size
 */
 
-void CFood::setSize(uint newSize)
+void CFood::setSize(uint newSize) //TODO: size can be removed
 {
     size = newSize > 0 ? newSize: 1;
-	Pos.h = size;
-	Pos.w = size;
 }
 
 /**************************************************************************************************

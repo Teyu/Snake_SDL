@@ -4,3 +4,4 @@ CGame bekommt eine Funktion Render(), die innerhalb von Run() aufgerufen wird
 CSnake und CFood: SDL_Rect Pos wird ersetzt durch CSprite.
 
 Beim Initialisieren wird Load("data/RedBlock.bmp") für jedes Sprite aufgerufen.
+In der Funktion Render wird dann für jedes Sprite die Funktion Render aufgerufen.

@@ -1,5 +1,4 @@
 #include "Framework.h"
-#include "Sprite.h"
 
 /****************************************************************************************************************************************************
 initialise
@@ -87,7 +86,7 @@ clear framework
 
 void CFramework::Clear()
 {
-    SDL_FillRect (m_pScreen, NULL, SDL_MapRGB (m_pScreen->format, 10, 10, 10));
+    SDL_FillRect (m_pScreen, NULL, SDL_MapRGB (m_pScreen->format, 0, 0, 0));
 }
 
 /****************************************************************************************************************************************************
@@ -132,11 +131,5 @@ void CFramework::drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> 
                 break;
             }
         }
-    }
-
-    //draw food:
-    for (int i=0; i < FoodPos.size(); i++)
-    {
-        paintRect(FoodPos[i], 255, 0 , 0);
     }
 }

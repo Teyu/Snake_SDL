@@ -6,8 +6,7 @@ constructor
 
 CSprite::CSprite()
 {
-	m_pScreen = g_pFramework->GetScreen();
-	m_pImage = NULL;
+    m_pImage = NULL;
 }
 
 /****************************************************************************************************************************************************
@@ -16,7 +15,7 @@ destructor
 
 CSprite::~CSprite()
 {
-	SDL_FreeSurface (m_pImage);
+    SDL_FreeSurface (m_pImage);
 }
 
 /****************************************************************************************************************************************************
@@ -27,9 +26,9 @@ void CSprite::Load( const string sFilename)
 {
 	m_sImageFile = sFilename;
 
-	m_pImage = SDL_LoadBMP( sFilename.c_str() );
+    m_pImage = SDL_LoadBMP( sFilename.c_str() );
 
-	if (m_pImage == NULL)
+    if (m_pImage == NULL)
 	{
         cout << "An error occured loading the following file: " << sFilename.c_str();
 		cout << endl;
@@ -37,12 +36,12 @@ void CSprite::Load( const string sFilename)
 
 		g_pFramework->Quit();
 		exit(1);
-	}
+    }
 
 	m_Rect.x = -1; //this way an exception will be thrown if position hasn't been set 
 	m_Rect.y = -1;
-	m_Rect.w = m_pImage->w;
-	m_Rect.h = m_pImage->h;
+    m_Rect.w = m_pImage->w;
+    m_Rect.h = m_pImage->h;
 }
 
 /****************************************************************************************************************************************************
@@ -53,11 +52,11 @@ void CSprite::SetPos( float fXPos, float fYPos)
 {
 	//sprite moves only when next integer is exceeded. This way its easier to control the speed of movement 
 	m_Rect.x = static_cast<int>(fXPos);
-	m_Rect.y = static_cast<int>(fYPos);
+    m_Rect.y = static_cast<int>(fYPos);
 }
 
 /****************************************************************************************************************************************************
-render (negative positions not allowed)
+render  (caution: framework has to be initialized!)
 */
 
 void CSprite::Render()
@@ -76,5 +75,6 @@ void CSprite::Render()
         exit(1);
     }
 
-	SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
+    m_pScreen = g_pFramework->GetScreen();
+    SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
 }

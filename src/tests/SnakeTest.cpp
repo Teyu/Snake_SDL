@@ -2,12 +2,7 @@
 #include <gmock/gmock.h>
 #include <Snake.h>
 
-bool operator ==(const SDL_Rect &a, const SDL_Rect &b) //TODO: outsource later
-{
-    return ((a.x == b.x) && (a.y == b.y) && (a.h == b.h) && (a.w == b.w));
-}
-
-//TODO: Testfälle mit gewundener Schlange ? Benötige mockSnake -> neuer Test rigourSnakeTest
+//TODO: Snake bewegt sich durch sreenborders test
 
 TEST(SnakeTest, initWithDirectionRightTest)
 {
@@ -26,10 +21,10 @@ TEST(SnakeTest, initWithDirectionRightTest)
                                     {35u, posY, size, size},
                                     {45u, posY, size, size},
                                     {55u, posY, size, size}};
-    ASSERT_EQ(length, Pos.size());
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_EQ(length, Pos.size());
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
     //TODO: abfrage mit getHead (posX, posY)
-    ASSERT_EQ(dir, Snake.getDir());
+    EXPECT_EQ(dir, Snake.getDir());
 }
 
 TEST(SnakeTest, initWithDirectionLeftTest)
@@ -49,10 +44,10 @@ TEST(SnakeTest, initWithDirectionLeftTest)
                                     {130u, posY, size, size},
                                     {120u, posY, size, size},
                                     {110u, posY, size, size}};
-    ASSERT_EQ(length, Pos.size());
+    EXPECT_EQ(length, Pos.size());
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
-    ASSERT_EQ(dir, Snake.getDir());
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_EQ(dir, Snake.getDir());
 }
 
 TEST(SnakeTest, initWithDirectionDownTest)
@@ -72,10 +67,10 @@ TEST(SnakeTest, initWithDirectionDownTest)
                                     {posX, 50u, size, size},
                                     {posX, 60u, size, size},
                                     {posX, 70u, size, size}};
-    ASSERT_EQ(length, Pos.size());
+    EXPECT_EQ(length, Pos.size());
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
-    ASSERT_EQ(dir, Snake.getDir());
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_EQ(dir, Snake.getDir());
 }
 
 TEST(SnakeTest, initWithDirectionUpTest)
@@ -95,10 +90,10 @@ TEST(SnakeTest, initWithDirectionUpTest)
                                     {posX, 280u, size, size},
                                     {posX, 270u, size, size},
                                     {posX, 260u, size, size}};
-    ASSERT_EQ(length, Pos.size());
+    EXPECT_EQ(length, Pos.size());
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
-    ASSERT_EQ(dir, Snake.getDir());
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_EQ(dir, Snake.getDir());
 }
 
 TEST(SnakeTest, initWithXPosOutOfScreenBordersDirectionRightTest)
@@ -119,7 +114,7 @@ TEST(SnakeTest, initWithXPosOutOfScreenBordersDirectionRightTest)
                                     {posX-1u*size, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 
@@ -141,7 +136,7 @@ TEST(SnakeTest, initWithXPosOutOfScreenBordersDirectionLeftTest)
                                     {posX-9u*size, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, initWithYPosOutOfScreenBordersDirectionUpTest)
@@ -162,7 +157,7 @@ TEST(SnakeTest, initWithYPosOutOfScreenBordersDirectionUpTest)
                                     {posX, posY-9u*size, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, initWithYPosOutOfScreenBordersDirectionDownTest)
@@ -183,7 +178,7 @@ TEST(SnakeTest, initWithYPosOutOfScreenBordersDirectionDownTest)
                                     {posX, posY-1u*size, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, moveWithDirectionRight)
@@ -205,7 +200,7 @@ TEST(SnakeTest, moveWithDirectionRight)
                                     {65u, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, moveWithDirectionLeft)
@@ -227,7 +222,7 @@ TEST(SnakeTest, moveWithDirectionLeft)
                                     {100u, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, moveWithDirectionUp)
@@ -249,7 +244,7 @@ TEST(SnakeTest, moveWithDirectionUp)
                                     {posX, 250u, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, moveWithDirectionDown)
@@ -271,7 +266,7 @@ TEST(SnakeTest, moveWithDirectionDown)
                                     {posX, 80u, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, changeDirectionRight)
@@ -286,8 +281,8 @@ TEST(SnakeTest, changeDirectionRight)
         Snake.init(posX, posY, length, size, direction::right);
 
         Snake.changeDirection(SDLK_RIGHT);
-        ASSERT_EQ(direction::down, Snake.getDir());
-        ASSERT_EQ(direction::right, Snake.getPrevD());
+        EXPECT_EQ(direction::down, Snake.getDir());
+        EXPECT_EQ(direction::right, Snake.getPrevD());
     }
 
     {
@@ -295,8 +290,8 @@ TEST(SnakeTest, changeDirectionRight)
         Snake.init(posX, posY, length, size, direction::down);
 
         Snake.changeDirection(SDLK_RIGHT);
-        ASSERT_EQ(direction::left, Snake.getDir());
-        ASSERT_EQ(direction::down, Snake.getPrevD());
+        EXPECT_EQ(direction::left, Snake.getDir());
+        EXPECT_EQ(direction::down, Snake.getPrevD());
     }
 
     {
@@ -304,8 +299,8 @@ TEST(SnakeTest, changeDirectionRight)
         Snake.init(posX, posY, length, size, direction::left);
 
         Snake.changeDirection(SDLK_RIGHT);
-        ASSERT_EQ(direction::up, Snake.getDir());
-        ASSERT_EQ(direction::left, Snake.getPrevD());
+        EXPECT_EQ(direction::up, Snake.getDir());
+        EXPECT_EQ(direction::left, Snake.getPrevD());
     }
 
     {
@@ -313,8 +308,8 @@ TEST(SnakeTest, changeDirectionRight)
         Snake.init(posX, posY, length, size, direction::up);
 
         Snake.changeDirection(SDLK_RIGHT);
-        ASSERT_EQ(direction::right, Snake.getDir());
-        ASSERT_EQ(direction::up, Snake.getPrevD());
+        EXPECT_EQ(direction::right, Snake.getDir());
+        EXPECT_EQ(direction::up, Snake.getPrevD());
     }
 }
 
@@ -330,8 +325,8 @@ TEST(SnakeTest, changeDirectionLeft)
         Snake.init(posX, posY, length, size, direction::right);
 
         Snake.changeDirection(SDLK_LEFT);
-        ASSERT_EQ(direction::up, Snake.getDir());
-        ASSERT_EQ(direction::right, Snake.getPrevD());
+        EXPECT_EQ(direction::up, Snake.getDir());
+        EXPECT_EQ(direction::right, Snake.getPrevD());
     }
 
     {
@@ -339,8 +334,8 @@ TEST(SnakeTest, changeDirectionLeft)
         Snake.init(posX, posY, length, size, direction::down);
 
         Snake.changeDirection(SDLK_LEFT);
-        ASSERT_EQ(direction::right, Snake.getDir());
-        ASSERT_EQ(direction::down, Snake.getPrevD());
+        EXPECT_EQ(direction::right, Snake.getDir());
+        EXPECT_EQ(direction::down, Snake.getPrevD());
     }
 
     {
@@ -348,8 +343,8 @@ TEST(SnakeTest, changeDirectionLeft)
         Snake.init(posX, posY, length, size, direction::left);
 
         Snake.changeDirection(SDLK_LEFT);
-        ASSERT_EQ(direction::down, Snake.getDir());
-        ASSERT_EQ(direction::left, Snake.getPrevD());
+        EXPECT_EQ(direction::down, Snake.getDir());
+        EXPECT_EQ(direction::left, Snake.getPrevD());
     }
 
     {
@@ -357,8 +352,8 @@ TEST(SnakeTest, changeDirectionLeft)
         Snake.init(posX, posY, length, size, direction::up);
 
         Snake.changeDirection(SDLK_LEFT);
-        ASSERT_EQ(direction::left, Snake.getDir());
-        ASSERT_EQ(direction::up, Snake.getPrevD());
+        EXPECT_EQ(direction::left, Snake.getDir());
+        EXPECT_EQ(direction::up, Snake.getPrevD());
     }
 }
 
@@ -382,7 +377,7 @@ TEST(SnakeTest, growWithDirectionRight)
                                     {65u, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, growWithDirectionLeft)
@@ -405,7 +400,7 @@ TEST(SnakeTest, growWithDirectionLeft)
                                     {100u, posY, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, growWithDirectionUp)
@@ -428,7 +423,7 @@ TEST(SnakeTest, growWithDirectionUp)
                                     {posX, 250u, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, growWithDirectionDown)
@@ -451,7 +446,95 @@ TEST(SnakeTest, growWithDirectionDown)
                                     {posX, 80u, size, size}};
 
     //TODO: abfrage mit getHead
-    ASSERT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+}
+
+TEST(SnakeTest, moveThroughRightScreenBorder)
+{
+    uint posX = 750u;
+    uint posY = 30u;
+    uint length = 5u;
+    uint size = 10u;
+
+    CSnake Snake;
+    Snake.init(posX, posY, length, size, direction::right);
+    Snake.move();
+
+    auto Pos = Snake.getPos();
+    std::vector<SDL_Rect> refPos = {{760u, posY, size, size},
+                                    {770u, posY, size, size},
+                                    {780u, posY, size, size},
+                                    {790u, posY, size, size},
+                                    {0u  , posY, size, size}};
+
+    //TODO: abfrage mit getHead
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+}
+
+TEST(SnakeTest, moveThroughLeftScreenBorder)
+{
+    uint posX = 40u;
+    uint posY = 30u;
+    uint length = 5u;
+    uint size = 10u;
+
+    CSnake Snake;
+    Snake.init(posX, posY, length, size, direction::left);
+    Snake.move();
+
+    auto Pos = Snake.getPos();
+    std::vector<SDL_Rect> refPos = {{30u , posY, size, size},
+                                    {20u , posY, size, size},
+                                    {10u , posY, size, size},
+                                    {0u  , posY, size, size},
+                                    {790u, posY, size, size}};
+
+    //TODO: abfrage mit getHead
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+}
+
+TEST(SnakeTest, moveThroughUpperScreenBorder)
+{
+    uint posX = 15;
+    uint posY = 40u;
+    uint length = 5u;
+    uint size = 10u;
+
+    CSnake Snake;
+    Snake.init(posX, posY, length, size, direction::up);
+    Snake.move();
+
+    auto Pos = Snake.getPos();
+    std::vector<SDL_Rect> refPos = {{posX, 30u , size, size},
+                                    {posX, 20u , size, size},
+                                    {posX, 10u , size, size},
+                                    {posX, 0u  , size, size},
+                                    {posX, 590u, size, size}};
+
+    //TODO: abfrage mit getHead
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
+}
+
+TEST(SnakeTest, moveThroughLowerScreenBorder)
+{
+    uint posX = 15u;
+    uint posY = 550u;
+    uint length = 5u;
+    uint size = 10u;
+
+    CSnake Snake;
+    Snake.init(posX, posY, length, size, direction::down);
+    Snake.move();
+
+    auto Pos = Snake.getPos();
+    std::vector<SDL_Rect> refPos = {{posX, 560u, size, size},
+                                    {posX, 570u, size, size},
+                                    {posX, 580u, size, size},
+                                    {posX, 590u, size, size},
+                                    {posX, 0u, size, size}};
+
+    //TODO: abfrage mit getHead
+    EXPECT_THAT(refPos, ::testing::ElementsAreArray(Pos));
 }
 
 TEST(SnakeTest, destroySnake)
@@ -465,5 +548,5 @@ TEST(SnakeTest, destroySnake)
     Snake.init(posX, posY, length, size, direction::down);
     Snake.destroy();
 
-    ASSERT_EQ(0u, Snake.getPos().size());
+    EXPECT_EQ(0u, Snake.getPos().size());
 }

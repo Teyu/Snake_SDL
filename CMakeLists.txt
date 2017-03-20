@@ -4,6 +4,10 @@ project(Snake)
 set (SNAKE_VERSION_MAJOR 1)
 set (SNAKE_VERSION_MINOR 0)
 
+file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${CMAKE_BINARY_DIR}/src)
+set (SNAKE_DATA_DIR "${CMAKE_BINARY_DIR}/src/data")
+# TODO: move getDataDir to seperate .h.in file
+
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "Please create an out-of-source build.")
 endif()

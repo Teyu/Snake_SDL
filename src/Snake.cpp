@@ -1,6 +1,11 @@
 #include "Snake.h"
 #include <iostream>
 
+bool operator ==(const SDL_Rect &a, const SDL_Rect &b)
+{
+    return ((a.x == b.x) && (a.y == b.y) && (a.h == b.h) && (a.w == b.w));
+}
+
 /**************************************************************************************************
 initialize length, size and position of snake
 */
