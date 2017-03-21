@@ -9,7 +9,8 @@ using namespace std;
 class CPlayer: public CSnake
 {
 public:
-	CPlayer() { KI = false;}
+    CPlayer() { KI = false;}
+
     void Init(int KeyL, int KeyR, int startPosX, int startPosY, direction startDir, int res);
 	void Update();
 	void growSnake();

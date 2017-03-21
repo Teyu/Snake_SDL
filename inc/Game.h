@@ -39,7 +39,7 @@ private:
 	float gameTempo;
 	int Players;
     int m_resolution;
-    vector<vector<SDL_Rect>> SPix;
+    vector<vector<SDL_Rect>> SPix; //TODO: nicht nötig, kann über CPlayer abgefragt werden
 	bool doInit;
 
 	bool checkCollFoodSnake( int Plyr, int Foo);

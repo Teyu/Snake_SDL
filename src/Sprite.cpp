@@ -16,6 +16,7 @@ destructor
 CSprite::~CSprite()
 {
     SDL_FreeSurface (m_pImage);
+    m_pImage = NULL;
 }
 
 /****************************************************************************************************************************************************
@@ -38,6 +39,7 @@ void CSprite::Load( const string sFilename)
 		exit(1);
     }
 
+    //TODO: nur bei bereits ungültiger position: (sonst wird gültige überschrieben)
 	m_Rect.x = -1; //this way an exception will be thrown if position hasn't been set 
 	m_Rect.y = -1;
     m_Rect.w = m_pImage->w;
@@ -61,7 +63,7 @@ render  (caution: framework has to be initialized!)
 
 void CSprite::Render()
 {
-    try
+    try //TODO: entferne try,catch anweisung hier -> überflüssig
     {
         if ((m_Rect.x < 0) || (m_Rect.y < 0))
         {
@@ -75,6 +77,7 @@ void CSprite::Render()
         exit(1);
     }
 
+    //TODO: prüfe vorher, dass m_pImage, m_pScreen gesetzt sind, sonst werfe Error
     m_pScreen = g_pFramework->GetScreen();
     SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
 }

@@ -19,10 +19,11 @@ void CGame::Init(int resolution)
     UTurn = false;
 
     //TODO: s.o.
+    Player.resize(Players);
 	for (int i = 0; i < Players; i++)
 	{
-		CPlayer P;
-		Player.push_back(P);
+        //CPlayer P;
+        //Player.push_back(P); //ruft constructor, copy-constructor und destructor auf, wenn ein temporäres Objekt gepusht wird
 		Player[i].name = Names[i];
         //TODO: new function: setupStartPositions
 		const int startLength = 5;
@@ -293,12 +294,12 @@ bool CGame::Quit()
 
     if ((Menu.gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
     {
-		for (int i=0; i < Players; i++)
+        for (int i=0; i < Players; i++)
 		{
 			Player[i].destroy();
-		}
-		Food.clear(); 	
-		Player.clear();
+        }
+        Food.clear();
+        Player.clear();
 		SPix.clear();
 
 		isRunning = true;
