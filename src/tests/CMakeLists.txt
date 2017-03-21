@@ -7,7 +7,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/inc
 )
 
-add_executable(SnakeUnitTests
+set (TEST_SRC
   ${CMAKE_SOURCE_DIR}/src/tests/FoodTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/GameTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/PlayerTest.cpp
@@ -16,6 +16,11 @@ add_executable(SnakeUnitTests
   ${CMAKE_SOURCE_DIR}/src/tests/Sample.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/SpriteTest.cpp
 )
+
+add_executable(SnakeUnitTests
+  ${TEST_SRC}
+)
+
 
 # TODO: add executable SnakeSystemTest
 

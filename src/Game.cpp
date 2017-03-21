@@ -8,11 +8,11 @@ void CGame::Init(int resolution)
 {
     if (doInit)
     {
-        Players = Menu.checkbackPlayers(); //TODO: checkbackPlayers should return std::vector<CPlayer>
-        Names = Menu.checkbackNames(Players); //TODO: can be removed than
-        gameTempo = Menu.checkbackTempo();
+        Players = Menu->checkbackPlayers(); //TODO: checkbackPlayers should return std::vector<CPlayer>
+        Names = Menu->checkbackNames(Players); //TODO: can be removed than
+        gameTempo = Menu->checkbackTempo();
 
-        Menu.gameStart();
+        Menu->gameStart();
     }
 
     isColl = false;
@@ -292,7 +292,7 @@ bool CGame::Quit()
     SDL_Delay(700);
     SDL_Quit();
 
-    if ((Menu.gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
+    if ((Menu->gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
     {
         for (int i=0; i < Players; i++)
 		{
