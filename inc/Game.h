@@ -13,28 +13,28 @@ using namespace std; //TODO: remove std
 class CGame
 {
 public:
-    CGame(CMenu &menu, CFramework &fw) : isRunning(true), doInit(true), Menu(&menu), Framework(&fw) {}
+    CGame(CMenu &menu, CFramework &fw) : isRunning(false), doInit(true), Menu(&menu), Framework(&fw) {}
     void Init(int resolution);
-    void Update();
+    void Update(); //TODO: all functions private
     void Control();
     void Render();
     void Run();
     bool Quit();
     void setGameTempo( float newTemp) { gameTempo = newTemp;}
+    float getGameTempo() {return gameTempo; }
     vector<vector<SDL_Rect>> getSnakePos() {return SPix;}
     vector<SDL_Rect> getFoodPos();
 
     bool isRunning;
-
 private:
     void ProcessEvents();
 
 private:
     CMenu * Menu;
     CFramework * Framework;
-    vector<CPlayer> Player;
+    vector<CPlayer *> Player;
     vector<string> Names; //TODO: gehört zu Player
-    vector<CFood> Food;
+    vector<CFood *> Food;
     CTimer timer;
     float SnakeTimer;
     float gameTempo;

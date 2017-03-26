@@ -18,7 +18,7 @@ protected:
 TEST_F(SampleTest, DISABLED_Test1)
 {
 
-    CSprite Sprite;
+    CSprite Sprite(*g_pFramework);
     Sprite.Load(getDataDir() + "/cherryAtNight.bmp");
     Sprite.SetPos(10.0f, 10.0f);
 

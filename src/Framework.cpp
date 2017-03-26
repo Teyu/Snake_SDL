@@ -98,6 +98,16 @@ void CRealFramework::Flip()
 	SDL_Flip(m_pScreen);
 }
 
+/****************************************************************************************************************************************************
+copies image to screen
+*/
+
+void CRealFramework::BlitSurface( SDL_Surface &Image, SDL_Rect &Rect)
+{
+    //TODO: prüfe vorher, dass m_pImage, m_pScreen gesetzt sind, sonst werfe Error
+    SDL_BlitSurface(&Image, NULL, m_pScreen, &Rect);
+}
+
 /**************************************************************************************************
 paint rectangle on screen
 */

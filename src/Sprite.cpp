@@ -1,15 +1,6 @@
 #include "Sprite.h"
 
 /****************************************************************************************************************************************************
-constructor
-*/
-
-CSprite::CSprite()
-{
-    m_pImage = NULL;
-}
-
-/****************************************************************************************************************************************************
 destructor
 */
 
@@ -35,7 +26,7 @@ void CSprite::Load( const string sFilename)
 		cout << endl;
         cout << "Error message: " << SDL_GetError() << endl;
 
-		g_pFramework->Quit();
+        m_pFramework->Quit();
 		exit(1);
     }
 
@@ -73,11 +64,12 @@ void CSprite::Render()
     {
         cerr << msg << endl;
 
-        g_pFramework->Quit();
+        m_pFramework->Quit();
         exit(1);
     }
 
     //TODO: prüfe vorher, dass m_pImage, m_pScreen gesetzt sind, sonst werfe Error
-    m_pScreen = g_pFramework->GetScreen();
-    SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
+    m_pFramework->BlitSurface(*m_pImage, m_Rect);
+    //m_pScreen = g_pFramework->GetScreen();
+    //SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
 }

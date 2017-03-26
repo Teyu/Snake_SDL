@@ -10,7 +10,7 @@ class CPlayer: public CSnake
 {
 public:
     ~CPlayer(){}
-    CPlayer() { KI = false;}
+    CPlayer(CFramework &fw) { KI = false; m_pFramework = &fw;}
 
     void Init(int KeyL, int KeyR, int startPosX, int startPosY, direction startDir, int res);
 	void Update();
@@ -22,6 +22,7 @@ public:
 	string name;
 
 private:
+    CFramework * m_pFramework;
 	int Points;
 	bool KeyLock; 
 	bool growLock;

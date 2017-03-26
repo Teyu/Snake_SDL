@@ -14,7 +14,7 @@ public:
     MOCK_METHOD1(checkbackNames, vector<string>(int AOP));
     MOCK_METHOD0(checkbackTempo, float());
     MOCK_METHOD0(gameStart, void());
-    MOCK_METHOD3(gameOver, bool(bool &init, vector<CPlayer> P ,float &Temp));
+    MOCK_METHOD3(gameOver, bool(bool &init, vector<CPlayer *> P ,float &Temp));
 };
 
 #endif

@@ -22,40 +22,39 @@ void CGame::Init(int resolution)
     Player.resize(Players);
 	for (int i = 0; i < Players; i++)
 	{
-        //CPlayer P;
-        //Player.push_back(P); //ruft constructor, copy-constructor und destructor auf, wenn ein temporäres Objekt gepusht wird
-		Player[i].name = Names[i];
+        Player[i] = new CPlayer(*Framework);
+        Player[i]->name = Names[i];
         //TODO: new function: setupStartPositions
 		const int startLength = 5;
 		switch (i)
 		{
 		case 0:  //Spieler 1 startet in der linken oberen Ecke
-            Player[i].Init(SDLK_LEFT, SDLK_RIGHT,0,3*resolution, direction::right, resolution);
+            Player[i]->Init(SDLK_LEFT, SDLK_RIGHT,0,3*resolution, direction::right, resolution);
 			//Er steuert mit den Pfeiltasten links/rechts
 			break;
 		case 1: //Spieler 2 startet am unteren Bildschirmrand in der Mitte
-            Player[i].Init(SDLK_a, SDLK_d, 400-resolution*startLength, 600-resolution, direction::right, resolution);
+            Player[i]->Init(SDLK_a, SDLK_d, 400-resolution*startLength, 600-resolution, direction::right, resolution);
 			//Er steuert mit A und D
 			break;
 		case 2: //Spieler 3 startet am rechten Rand in der Mitte 
-            Player[i].Init(SDLK_k, SDLK_l,800-resolution*startLength, 300-resolution, direction::left, resolution);
+            Player[i]->Init(SDLK_k, SDLK_l,800-resolution*startLength, 300-resolution, direction::left, resolution);
 			//Er steuert mit K und L
 			break;
 		}
-        SPix.push_back(Player[i].getPos()); //TODO: wird SPix benötigt?
+        SPix.push_back(Player[i]->getPos()); //TODO: wird SPix benötigt?
 	} 	
 	SnakeTimer = 0.0f;
 	for (int i=0; i < Players; i++)
 	{
 		if (Names[i] == "bot")
 		{
-            Player[i].setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
+            Player[i]->setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
 		}
 	}
 
 
     // TODO: new function setResolution
-    //TODO: remove magic numbers 800 und 600
+    // TODO: remove magic numbers 800 und 600
     if (((800%resolution) !=0) || ((600%resolution) !=0))
 	{
         m_resolution = 10;
@@ -68,7 +67,8 @@ void CGame::Init(int resolution)
     Food.resize(Players);
 	for (int i=0; i < Players; i++)
     {
-        Food[i].setSize(resolution);
+        Food[i] = new CFood(*Framework);
+        Food[i]->setSize(resolution);
 	}
     spawnFood();
 
@@ -82,7 +82,7 @@ render Scene
 void CGame::Render()
 {
     for (size_t i = 0; i < Food.size(); i++)
-        Food[i].Render();
+        Food[i]->Render();
 }
 
 /****************************************************************************************************************************************************
@@ -91,6 +91,12 @@ verify if a button is pressed to quit the game
 
 void CGame::ProcessEvents()
 {
+    if (Framework->KeyDown(SDLK_ESCAPE))
+    {
+        isRunning = false;
+        return;
+    }
+
     SDL_Event Event;
     if (SDL_PollEvent ( &Event))
     {
@@ -100,19 +106,14 @@ void CGame::ProcessEvents()
             {
                 isRunning = false;
             } break;
-        case (SDL_KEYDOWN):
-            {
-                if (Event.key.keysym.sym == SDLK_ESCAPE)
-                {
-                    isRunning = false;
-                }
-            }break;
         }
     }
 }
 
-void CGame::Run()
+void CGame::Run() //TODO: für bessere Testbarkeit while-Schleife auslagern
 {
+    isRunning = true;
+
     while (isRunning)
     {
         ProcessEvents();
@@ -148,16 +149,16 @@ void CGame::Update()
 
         for (int i = 0; i < Players; i++)
 		{
-			Player[i].Update();
-            if (Player[i].isKI()) // TODO: can be removed, wenn CBot : CSnake
+            Player[i]->Update();
+            if (Player[i]->isKI()) // TODO: can be removed, wenn CBot : CSnake
             {
-                doKI(Player[i]);
+                doKI(*Player[i]);
 			}
 		}
 
 		for (int i = 0; i < Players; i++)
         {
-            SPix[i] = Player[i].getPos(); // TODO. nicht notwendig
+            SPix[i] = Player[i]->getPos(); // TODO. nicht notwendig
         }
 }
 
@@ -173,18 +174,18 @@ void CGame::Control()
             //TEST:
 			for (int i = 0; i < Players; i++)
             {
-				if ((UTurn == false) || (Player[i].isKI() == false))
+                if ((UTurn == false) || (Player[i]->isKI() == false))
 				{
-					Player[i].move();
-				} else if ((Player[i].isKI()) && (UTurn))
+                    Player[i]->move();
+                } else if ((Player[i]->isKI()) && (UTurn))
 				{
 					if (Utimer < 2)
 					{
-						Player[i].move();
+                        Player[i]->move();
 						Utimer++;
 					} else
 					{
-						Player[i].changeDirection(UDir);
+                        Player[i]->changeDirection(UDir);
 						Utimer = 0;
 						UTurn = false;
 					}
@@ -200,8 +201,8 @@ void CGame::Control()
 			{
                 if (checkCollFoodSnake(i,j)) //TODO: rename checkColl(CFood, CSnake)
 				{
-					Player[i].growSnake();
-					Food[j].destroy();
+                    Player[i]->growSnake();
+                    Food[j]->destroy();
                     spawnFood();
 				}
 			}
@@ -221,7 +222,7 @@ bool CGame::checkCollFoodSnake(int Plyr, int Foo)
 {
     for (int i=0; i < SPix[Plyr].size(); i++) //TODO : replace SPix with actual function call
 		{
-			if ((SPix[Plyr][i].x == Food[Foo].getPos().x) && (SPix[Plyr][i].y == Food[Foo].getPos().y))
+            if ((SPix[Plyr][i].x == Food[Foo]->getPos().x) && (SPix[Plyr][i].y == Food[Foo]->getPos().y))
 			{
 				return true;
 			}
@@ -239,17 +240,17 @@ bool CGame::checkCollSnakeSnake()
     vector<SDL_Rect> Heads; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
 	for (int i = 0; i < Players; i++)
 	{
-		Heads.push_back(Player[i].getPos()[Player[i].getPos().size() - 1]);
+        Heads.push_back(Player[i]->getPos()[Player[i]->getPos().size() - 1]);
 	}
 
     for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit ?
     {
         for (int j = 0; j < Players; j++)
         {
-             for (int k = 0; k < Player[i].getPos().size(); k++)
+             for (int k = 0; k < Player[i]->getPos().size(); k++)
              {
-                if ((Player[i].getPos()[k].x == Heads[j].x)
-                    && (Player[i].getPos()[k].y == Heads[j].y)) //TODO: überlade ==operator für Rect
+                if ((Player[i]->getPos()[k].x == Heads[j].x)
+                    && (Player[i]->getPos()[k].y == Heads[j].y)) //TODO: überlade ==operator für Rect
                 {
                     if (i == j) //its own Head
                         break;
@@ -270,13 +271,13 @@ void CGame::spawnFood()
 {
         for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit
 		{
-            Food[i].spawn();
+            Food[i]->spawn();
 			for (int j = 0; j < Players; j++)
 			{
                 while(checkCollFoodSnake(i, j))
 				{
-					Food[j].destroy();
-                    Food[j].spawn();
+                    Food[j]->destroy();
+                    Food[j]->spawn();
 				}
 			}
         }
@@ -296,7 +297,9 @@ bool CGame::Quit()
     {
         for (int i=0; i < Players; i++)
 		{
-			Player[i].destroy();
+            Player[i]->destroy();
+            free(Player[i]);
+            free(Food[i]);
         }
         Food.clear();
         Player.clear();
@@ -321,7 +324,7 @@ vector<SDL_Rect> CGame::getFoodPos()
     vector<SDL_Rect> ret;
     for (int i=0; i< Players; i++)
 	{
-        ret.push_back(Food[i].getPos());
+        ret.push_back(Food[i]->getPos());
 	}
 
     return ret;
@@ -569,14 +572,14 @@ void CGame::doKI( CPlayer &Bot)
     {
 		//Wenn die Gefahr einer Kollision nicht besteht, 
 		//lasse den Bot auf Futtersuche gehen:
-        CFood *nearest = &Food[0]; //Jage dabei das nächstgelegene!
+        CFood *nearest = Food[0]; //Jage dabei das nächstgelegene!
 		for (int i = 0; i < Players; i++)
 		{
 			if ((Players > 1) &&
-				(abs(Food[i].getPos().x - Head.x) + abs(Food[i].getPos().y - Head.y) 
+                (abs(Food[i]->getPos().x - Head.x) + abs(Food[i]->getPos().y - Head.y)
                 < (abs(nearest->getPos().x - Head.x) + abs(nearest->getPos().y - Head.y))))
 			{
-                nearest = &Food[i];
+                nearest = Food[i];
 			}
 		}
         goForFood(*nearest, Bot);
@@ -590,7 +593,7 @@ bool CGame::isFull(SDL_Rect Pix)
 	for (int p = 0; p < Players; p++)
 	{
 		//gehe alle Pixel der einzelnen Spieler durch:
-		for (int i = 0; i < Player[p].getPos().size(); i++)
+        for (int i = 0; i < Player[p]->getPos().size(); i++)
 		{
 			if ((SPix[p][i].x == Pix.x) && (SPix[p][i].y == Pix.y))
 			{

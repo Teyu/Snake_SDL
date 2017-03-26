@@ -26,21 +26,21 @@ void CPlayer::Update()
 
     if (KI == false) // TODO: remove wenn CBot implementiert
     {
-        g_pFramework->Update();
+        m_pFramework->Update();
 
         if (!KeyLock)
         {
-            if (g_pFramework->KeyDown(KeyRight))
+            if (m_pFramework->KeyDown(KeyRight))
             {
                 changeDirection(KeyRight);
             }
-            if (g_pFramework->KeyDown(KeyLeft))
+            if (m_pFramework->KeyDown(KeyLeft))
             {
                 changeDirection(KeyLeft);
             }
             KeyLock = true;
         }
-        if ((!g_pFramework->KeyDown(KeyRight)) && (!g_pFramework->KeyDown(KeyLeft)))
+        if ((!m_pFramework->KeyDown(KeyRight)) && (!m_pFramework->KeyDown(KeyLeft)))
         {
             KeyLock = false;
         }

@@ -79,7 +79,7 @@ void CRealMenu::gameStart()
 displays a feedback to the player and opens a menu to edit settings and/or to restart the game
 */
 
-bool CRealMenu::gameOver(bool &init, vector<CPlayer> P ,float &Temp)
+bool CRealMenu::gameOver(bool &init, vector<CPlayer *> P ,float &Temp)
 //TODO: funktion startAgain(), die zurückgibt ob neu gestartet werden soll
 //TODO: funktion update(), die Player den Einstellungen entsprechend updated
 {
@@ -87,7 +87,7 @@ bool CRealMenu::gameOver(bool &init, vector<CPlayer> P ,float &Temp)
 
 	for (int p = 0; p < P.size(); p++)
 	{
-        cout << P[p].name << " selected " << P[p].getPoints()
+        cout << P[p]->name << " selected " << P[p]->getPoints()
         << " fruits!" << endl;
 	}
 	cout << endl;

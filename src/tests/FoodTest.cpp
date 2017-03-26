@@ -4,7 +4,7 @@
 
 TEST(FoodTest, setSizeTest) //TODO: can be removed later
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     uint size = 10u;
 
     Food.setSize(size);
@@ -14,7 +14,7 @@ TEST(FoodTest, setSizeTest) //TODO: can be removed later
 
 TEST(FoodTest, DISABLED_setSizeTooSmallTest) //TODO: can be removed later
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     uint size = 0u;
 
     Food.setSize(size);
@@ -24,7 +24,7 @@ TEST(FoodTest, DISABLED_setSizeTooSmallTest) //TODO: can be removed later
 
 TEST(FoodTest, spawnFormWithinScreenBordersTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
 
     auto Pos = Food.getPos();
@@ -36,7 +36,7 @@ TEST(FoodTest, spawnFormWithinScreenBordersTest)
 
 TEST(FoodTest, spawnNewFormWhenPreviousStillExistsTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
     auto prevPos = Food.getPos();
 
@@ -49,7 +49,7 @@ TEST(FoodTest, spawnNewFormWhenPreviousStillExistsTest)
 
 TEST(FoodTest, spawnNewFormWhenPreviousNoLongerExistsTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
     auto prevPos = Food.getPos();
 

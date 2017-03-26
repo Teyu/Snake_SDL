@@ -16,7 +16,7 @@ public:
     virtual vector<string> checkbackNames(int AOP) = 0; // TODO: AOP? (numPlayers)
     virtual float checkbackTempo() = 0;
     virtual void gameStart() = 0;
-    virtual bool gameOver(bool &init, vector<CPlayer> P ,float &Temp) = 0;
+    virtual bool gameOver(bool &init, vector<CPlayer*> P ,float &Temp) = 0;
 };
 
 class CRealMenu : public CMenu
@@ -28,7 +28,7 @@ public:
     vector<string> checkbackNames(int AOP); // TODO: AOP? (numPlayers)
     float checkbackTempo();
     void gameStart();
-    bool gameOver(bool &init, vector<CPlayer> P ,float &Temp);
+    bool gameOver(bool &init, vector<CPlayer*> P ,float &Temp);
 private:
     string input;
 

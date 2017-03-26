@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define g_pFramework CRealFramework::Get() //pointer to single entity of CFramework
+#define g_pFramework CRealFramework::Get() //TODO: Singleton abschaffen
 
 class CFramework
 {
@@ -22,6 +22,7 @@ public:
     virtual void Clear() = 0;
     virtual void Flip() = 0;
     virtual bool KeyDown( int Key_ID) = 0;
+    virtual void BlitSurface( SDL_Surface &Image, SDL_Rect &Rect) = 0;
 };
 
 class CRealFramework : public CFramework, public TSingleton<CRealFramework>
@@ -35,6 +36,7 @@ public:
     void Clear();
     void Flip();
     bool KeyDown( int Key_ID);
+    void BlitSurface( SDL_Surface &Image, SDL_Rect &Rect);
     SDL_Surface *GetScreen() { return m_pScreen;}
     int GetScreenWidth() { return m_ScreenW;} //TODO: kann man diese auch über SDL_Surface abfragen?
     int GetScreenHeight() { return m_ScreenH;}

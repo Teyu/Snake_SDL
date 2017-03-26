@@ -18,6 +18,7 @@ public:
     MOCK_METHOD0(Clear, void());
     MOCK_METHOD0(Flip, void());
     MOCK_METHOD1(KeyDown, bool(int Key_ID));
+    MOCK_METHOD2(BlitSurface, void(SDL_Surface &Image, SDL_Rect &Rect));
 };
 
 #endif
