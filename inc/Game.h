@@ -13,7 +13,7 @@ using namespace std; //TODO: remove std
 class CGame
 {
 public:
-    CGame(CMenu &menu) : isRunning(true), doInit(true), Menu(&menu) {}
+    CGame(CMenu &menu, CFramework &fw) : isRunning(true), doInit(true), Menu(&menu), Framework(&fw) {}
     void Init(int resolution);
     void Update();
     void Control();
@@ -31,6 +31,7 @@ private:
 
 private:
     CMenu * Menu;
+    CFramework * Framework;
     vector<CPlayer> Player;
     vector<string> Names; //TODO: gehört zu Player
     vector<CFood> Food;

@@ -19,8 +19,8 @@ int main( int argc, char *argv[])
     cout << "Player 2 (blue) uses the keys A and D." << endl;
     cout << "Player 3 (yellow) uses the keys L and K." << endl << endl;
 
-    CConcreteMenu Menu;
-    CGame Game(Menu);
+    CRealMenu Menu;
+    CGame Game(Menu, *g_pFramework);
 
     Game.Init(10);
     Game.Run();

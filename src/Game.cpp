@@ -72,7 +72,7 @@ void CGame::Init(int resolution)
 	}
     spawnFood();
 
-    g_pFramework->Init(800, 600, 16, false);
+    Framework->Init(800, 600, 16, false);
 }
 
 /**************************************************************************************************
@@ -117,18 +117,18 @@ void CGame::Run()
     {
         ProcessEvents();
 
-        g_pFramework->Update();
-        g_pFramework->Clear();
+        Framework->Update();
+        Framework->Clear();
 
         Update();
         Control(); //TODO: Control -> Update
         vector<vector<SDL_Rect>> SnakePos = getSnakePos();
         vector<SDL_Rect> FoodPos = getFoodPos();
 
-        g_pFramework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
+        Framework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
 
         Render();
-        g_pFramework->Flip();
+        Framework->Flip();
     }
 
     if (!Quit())

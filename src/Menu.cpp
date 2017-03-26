@@ -4,7 +4,7 @@
 returns the number of players
 */
 
-int CConcreteMenu::checkbackPlayers()
+int CRealMenu::checkbackPlayers()
 {
     cout << "Enter the number of players ( 1 , 2 , 3 ) : " ;
 	cin >> input;
@@ -21,7 +21,7 @@ int CConcreteMenu::checkbackPlayers()
 returns the players' names
 */
 
-vector<string> CConcreteMenu::checkbackNames(int AOP)
+vector<string> CRealMenu::checkbackNames(int AOP)
 {
 	vector<string> output;
 	for (int i = 0; i < AOP; i++)
@@ -38,7 +38,7 @@ vector<string> CConcreteMenu::checkbackNames(int AOP)
 returns the game tempo
 */
 
-float CConcreteMenu::checkbackTempo()
+float CRealMenu::checkbackTempo()
 {
     cout << "game tempo: (s)low , (n)normal, (f)ast : ";
 	cin >> input;
@@ -63,7 +63,7 @@ float CConcreteMenu::checkbackTempo()
 displays the start of the game
 */
 
-void CConcreteMenu::gameStart()
+void CRealMenu::gameStart()
 {
     cout << endl << "The game is starting ";
 	for (int i= 0; i< 3 ; i++)
@@ -79,7 +79,7 @@ void CConcreteMenu::gameStart()
 displays a feedback to the player and opens a menu to edit settings and/or to restart the game
 */
 
-bool CConcreteMenu::gameOver(bool &init, vector<CPlayer> P ,float &Temp)
+bool CRealMenu::gameOver(bool &init, vector<CPlayer> P ,float &Temp)
 //TODO: funktion startAgain(), die zurückgibt ob neu gestartet werden soll
 //TODO: funktion update(), die Player den Einstellungen entsprechend updated
 {

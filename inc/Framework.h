@@ -9,19 +9,33 @@
 
 using namespace std;
 
-#define g_pFramework CFramework::Get() //pointer to single entity of CFramework
+#define g_pFramework CRealFramework::Get() //pointer to single entity of CFramework
 
-class CFramework : public TSingleton<CFramework>
+class CFramework
 {
 public:
-    virtual bool Init (int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen);
-    virtual void Quit();
-    virtual void Update();
-    virtual void drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> &FoodPos);
-    virtual void Clear();
-    virtual void Flip();
-    virtual bool KeyDown( int Key_ID);
-    virtual SDL_Surface *GetScreen() { return m_pScreen;}
+    virtual ~CFramework() {}
+    virtual bool Init (int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen) = 0;
+    virtual void Quit() = 0;
+    virtual void Update() = 0;
+    virtual void drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> &FoodPos) = 0;
+    virtual void Clear() = 0;
+    virtual void Flip() = 0;
+    virtual bool KeyDown( int Key_ID) = 0;
+};
+
+class CRealFramework : public CFramework, public TSingleton<CRealFramework>
+{
+public:
+    ~CRealFramework() {}
+    bool Init (int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen);
+    void Quit();
+    void Update();
+    void drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> &FoodPos);
+    void Clear();
+    void Flip();
+    bool KeyDown( int Key_ID);
+    SDL_Surface *GetScreen() { return m_pScreen;}
     int GetScreenWidth() { return m_ScreenW;} //TODO: kann man diese auch über SDL_Surface abfragen?
     int GetScreenHeight() { return m_ScreenH;}
 

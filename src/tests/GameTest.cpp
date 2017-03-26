@@ -1,34 +1,42 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "tests/MockGame.h"
+#include "tests/MockMenu.h"
+#include "tests/MockFramework.h"
 #include "Game.h"
 
-//#undef g_pFramework
-//#define g_pFramework CMockFramework::Get()
-
-//TODO: rename MockGame -> MockMenu
-//TODO: create MockFramework.cpp oder mocken ?
-
+using ::testing::_;
 using ::testing::Return;
 
-TEST(GameTest, test1)
+class GameTest : public ::testing::Test
+{
+public:
+    void TearDown()
+    {
+        g_pFramework->Del();
+    }
+};
+
+TEST_F(GameTest, test1)
 {
     CMockMenu MockMenu;
-    CGame Game(MockMenu);
     std::vector<std::string> names = {"Player1", "Player2", "Player3"};
 
+    //setting up default behaviour:
     ON_CALL(MockMenu, checkbackPlayers())
-            .WillByDefault(Return(3)); //setting default value
-    ON_CALL(MockMenu, checkbackNames(3))
-            .WillByDefault(Return(names)); //setting default value
+            .WillByDefault(Return(names.size()));
+    ON_CALL(MockMenu, checkbackNames(_))
+            .WillByDefault(Return(names));
     ON_CALL(MockMenu, checkbackTempo())
-            .WillByDefault(Return(0.05f)); //setting default value
+            .WillByDefault(Return(0.05f));
+    ON_CALL(*g_pFramework, Init(_, _, _, _))
+            .WillByDefault(Return(true));
 
-    EXPECT_CALL(MockMenu, checkbackPlayers())
-            .WillOnce(Return(3));
-    //TEST
-    //std::cout << "checkbackPlayers: " << MockMenu.checkbackPlayers() << std::endl;
-    //
+    EXPECT_CALL(MockMenu, checkbackPlayers());
+    EXPECT_CALL(MockMenu, checkbackNames(_));
+    EXPECT_CALL(MockMenu, checkbackTempo());
+    EXPECT_CALL(MockMenu, gameStart());
+    EXPECT_CALL(*g_pFramework, Init(_, _, _, _));
 
+    CGame Game(MockMenu, *g_pFramework);
     Game.Init(10);
 }

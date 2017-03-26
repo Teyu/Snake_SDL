@@ -19,11 +19,11 @@ public:
     virtual bool gameOver(bool &init, vector<CPlayer> P ,float &Temp) = 0;
 };
 
-class CConcreteMenu : public CMenu
+class CRealMenu : public CMenu
 {
 public:
-    CConcreteMenu() { input = "";}
-    ~CConcreteMenu(){}
+    CRealMenu() { input = "";}
+    ~CRealMenu(){}
     int checkbackPlayers();
     vector<string> checkbackNames(int AOP); // TODO: AOP? (numPlayers)
     float checkbackTempo();
