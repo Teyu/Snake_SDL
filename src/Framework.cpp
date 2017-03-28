@@ -59,6 +59,7 @@ shut down framework
 void CRealFramework::Quit()
 {
 	SDL_Quit();
+    g_pTimer->Del();
 }
 
 /****************************************************************************************************************************************************
@@ -67,7 +68,7 @@ update framework
 
 void CRealFramework::Update()
 {
-    m_timer.update();
+    g_pTimer->update();
 	SDL_PumpEvents();
 }
 

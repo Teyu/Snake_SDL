@@ -47,7 +47,6 @@ private:
 
 private:
     SDL_Surface *m_pScreen;
-    CTimer m_timer;
     Uint8 *m_pKeystate;
     int m_ScreenW;
     int m_ScreenH;

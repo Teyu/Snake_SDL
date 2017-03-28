@@ -23,8 +23,11 @@ int main( int argc, char *argv[])
     CGame Game(Menu, *g_pFramework);
 
     Game.Init(10);
-    Game.Run();
-    //Game.Quit(); //TODO: uncomment after restruction (until schleife ?)
+    while (Game.isRunning)
+    {
+        Game.Run();
+    }
+    //Game.Quit();
 
     g_pFramework->Quit(); //TODO: nach CGame verlagern
     g_pFramework->Del();

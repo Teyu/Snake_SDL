@@ -23,11 +23,8 @@ checks keyboard input and updates direction of snake
 
 void CPlayer::Update()
 {
-
     if (KI == false) // TODO: remove wenn CBot implementiert
     {
-        m_pFramework->Update();
-
         if (!KeyLock)
         {
             if (m_pFramework->KeyDown(KeyRight))

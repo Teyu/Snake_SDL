@@ -12,7 +12,7 @@ class CFood
 {
 public:
     CFood(CFramework &fw);
-    ~CFood() {free(m_Sprite);}
+    ~CFood() {delete m_Sprite;}
     SDL_Rect getPos() { return m_Sprite->GetRect();} //REMOVE
     void setSize(uint newSize);
     void Render();

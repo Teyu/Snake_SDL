@@ -43,14 +43,14 @@ void CGame::Init(int resolution)
 		}
         SPix.push_back(Player[i]->getPos()); //TODO: wird SPix benötigt?
 	} 	
-	SnakeTimer = 0.0f;
+    SnakeTimer = 0.0f;
 	for (int i=0; i < Players; i++)
 	{
 		if (Names[i] == "bot")
 		{
             Player[i]->setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
 		}
-	}
+    }
 
 
     // TODO: new function setResolution
@@ -73,6 +73,7 @@ void CGame::Init(int resolution)
     spawnFood();
 
     Framework->Init(800, 600, 16, false);
+    isRunning = true; //TODO: umbennenen (misleading)
 }
 
 /**************************************************************************************************
@@ -110,32 +111,34 @@ void CGame::ProcessEvents()
     }
 }
 
-void CGame::Run() //TODO: für bessere Testbarkeit while-Schleife auslagern
+void CGame::Run()
 {
-    isRunning = true;
+    if (!isRunning)
+        isRunning = true;
 
-    while (isRunning)
+    ProcessEvents();
+
+    Framework->Update();
+    Framework->Clear();
+
+    Update();
+
+    Control(); //TODO: Control -> Update
+    vector<vector<SDL_Rect>> SnakePos = getSnakePos();
+    vector<SDL_Rect> FoodPos = getFoodPos();
+
+    Framework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
+
+    Render();
+    Framework->Flip();
+
+    if (!isRunning)
     {
-        ProcessEvents();
-
-        Framework->Update();
-        Framework->Clear();
-
-        Update();
-        Control(); //TODO: Control -> Update
-        vector<vector<SDL_Rect>> SnakePos = getSnakePos();
-        vector<SDL_Rect> FoodPos = getFoodPos();
-
-        Framework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
-
-        Render();
-        Framework->Flip();
-    }
-
-    if (!Quit())
-    {
-        Init(10);
-        Run();
+        Quit();
+        if (!isGameOver())
+        {
+            Init(10);
+        }
     }
 }
 
@@ -145,8 +148,6 @@ updates the timer, the keyboard input and the position of the Snakes
 
 void CGame::Update()
 {
-        timer.update();
-
         for (int i = 0; i < Players; i++)
 		{
             Player[i]->Update();
@@ -168,18 +169,18 @@ coordinates the Players' movements
 
 void CGame::Control()
 {
-		SnakeTimer += timer.GetElapsed();
+        SnakeTimer += g_pTimer->GetElapsed();
 		if (SnakeTimer > gameTempo)
 		{
             //TEST:
-			for (int i = 0; i < Players; i++)
+            for (int i = 0; i < Players; i++)
             {
                 if ((UTurn == false) || (Player[i]->isKI() == false))
-				{
+                {
                     Player[i]->move();
                 } else if ((Player[i]->isKI()) && (UTurn))
 				{
-					if (Utimer < 2)
+                    if (Utimer < 2)
 					{
                         Player[i]->move();
 						Utimer++;
@@ -188,9 +189,9 @@ void CGame::Control()
                         Player[i]->changeDirection(UDir);
 						Utimer = 0;
 						UTurn = false;
-					}
+                    }
                 }
-			}
+            }
             //ENDETEST
         SnakeTimer = 0.0f;
         }
@@ -288,30 +289,33 @@ quits the game, opens the menu and restarts the game or shuts it down based on t
 Returns true if the user wants to end the game, otherwise returns false
 */
 
-bool CGame::Quit()
+void CGame::Quit()
 {
     SDL_Delay(700);
     SDL_Quit();
+}
 
-    if ((Menu->gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
+bool CGame::isGameOver()
+{
+    if (!(Menu->gameOver(doInit, Player, gameTempo))) //TODO: rename -> gameover is misleading
     {
         for (int i=0; i < Players; i++)
-		{
+        {
             Player[i]->destroy();
             free(Player[i]);
             free(Food[i]);
         }
         Food.clear();
         Player.clear();
-		SPix.clear();
+        SPix.clear();
 
-		isRunning = true;
+        isRunning = true;
 
-		return false;
-	} else
-	{
-		isRunning = false;
-		return true;
+        return false;
+    } else
+    {
+        isRunning = false;
+        return true;
     }
 }
 
