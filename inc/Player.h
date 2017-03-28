@@ -19,14 +19,13 @@ public:
     void setKI(bool nKI) {KI = nKI;} // TODO: neue Klasse CBot:CSnake (lagere gemeinsame Eigenschaften nach CSnake aus)
 	bool isKI() { return KI;}
 
-	string name;
+    string name; //TODO: initialize with "Player"
 
 private:
     CFramework * m_pFramework;
-	int Points;
-	bool KeyLock; 
-	bool growLock;
-	int KeyLeft;
+    int Points;
+    bool KeyLock;
+    int KeyLeft; //TODO: initialize
 	int KeyRight;
     bool KI;
 };

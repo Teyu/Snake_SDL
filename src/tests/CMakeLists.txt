@@ -13,7 +13,6 @@ set (UNIT_TEST_SRC
   ${CMAKE_SOURCE_DIR}/src/tests/CollisionTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/SnakeTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/RigourSnakeTest.cpp
-  ${CMAKE_SOURCE_DIR}/src/tests/Sample.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/SpriteTest.cpp
 )
 

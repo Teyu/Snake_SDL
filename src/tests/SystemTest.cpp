@@ -21,7 +21,7 @@ bool operator !=(const SDL_Rect &a, const SDL_Rect &b)
     return !(a == b);
 }
 
-class GameTest : public ::testing::Test //TODO: Systemtest
+class GameTest : public ::testing::Test
 {
 public:
     void SetUp()
@@ -45,18 +45,15 @@ public:
     {
         //TODO: remove after removed from main
         g_pFramework->Quit();
-        g_pFramework->Del();
+        g_pFramework->Del(); //TODO: set expectation after moved to main
     }
 
 public:
     CMockMenu MockMenu;
+    int size = 10;
     int numPlayers = 3;
     float gameTempo = 0.05f;
-    int size = 10;
     std::vector<std::string> names = {"Player1", "Player2", "Player3"};
-    SDL_Rect Player1StartPos = {40, 30, 10, 10};
-    SDL_Rect Player2StartPos = {800/2-10, 600-50, 10, 10}; //TODO: remove magic numbers
-    SDL_Rect Player3StartPos = {800-90, 600/2-10, 10, 10};
 };
 
 TEST_F(GameTest, testInit)
@@ -82,28 +79,8 @@ TEST_F(GameTest, testInit)
     CGame Game(MockMenu, *g_pFramework);
     Game.Init(size);
     ASSERT_TRUE(Game.isRunning);
-
-    auto Snakes = Game.getSnakePos();
-    ASSERT_EQ(numPlayers, Snakes.size());
-    EXPECT_EQ(Snakes[0][4], Player1StartPos); //TODO: replace with getHead (rest is part of SnakeTest)
-    EXPECT_EQ(Snakes[1][4], Player2StartPos); //TODO: remove magic numbers (#define)
-    EXPECT_EQ(Snakes[2][4], Player3StartPos);
-    for (size_t i = 0; i < Snakes.size(); i++)
-    {
-        EXPECT_EQ(size, Snakes[i][4].h);
-        EXPECT_EQ(size, Snakes[i][4].w);
-    }
-
-    auto Foods = Game.getFoodPos();
-    ASSERT_EQ(numPlayers, Foods.size());
-    for (size_t i = 0; i < Foods.size(); i++)
-    {
-        EXPECT_EQ(size, Foods[i].h);
-        EXPECT_EQ(size, Foods[i].w);
-    }
-
-    ASSERT_FLOAT_EQ(gameTempo, Game.getGameTempo());
     Game.Quit();
+    ASSERT_FALSE(Game.isRunning);
 }
 
 TEST_F(GameTest, testRunAndTriggerQuitEvent)
@@ -384,14 +361,14 @@ TEST_F(GameTest, testRunFiniteLoop)
                 .Times(Exactly(1));
         EXPECT_CALL(*g_pFramework, Init(_, _, _, _)) //TODO: enter screenWidth,screenHeight after definition (see below)
                 .Times(Exactly(1));
-        EXPECT_CALL(*g_pFramework, KeyDown(_))
-                .WillRepeatedly(Return(false));
+        EXPECT_CALL(*g_pFramework, Update())
+                .Times(AtLeast(1));
         EXPECT_CALL(*g_pFramework, Quit())
                 .Times(Exactly(1));
     }
 
-    EXPECT_CALL(*g_pFramework, Update())
-            .Times(AtLeast(1));
+    EXPECT_CALL(*g_pFramework, KeyDown(_))
+            .WillRepeatedly(Return(false));
     EXPECT_CALL(MockMenu, gameOver(_,_,_))
             .Times(Exactly(0));
 

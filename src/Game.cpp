@@ -294,6 +294,8 @@ void CGame::Quit()
 {
     SDL_Delay(700);
     SDL_Quit();
+
+    isRunning = false;
 }
 
 bool CGame::isGameOver() //TODO: aus dem Namen nicht ersichtlich, dass eine Abfrage auf der Konsole stattfindet

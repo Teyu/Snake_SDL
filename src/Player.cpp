@@ -7,7 +7,6 @@ initializes member variables
 void CPlayer::Init(int KeyL, int KeyR, int startPosX, int startPosY, direction startDir, int res)
 {
     KeyLock = false;
-    growLock = false;
 	Points = 0;
 	length = 0;
 	KeyLeft = KeyL;
@@ -49,6 +48,8 @@ let Snake grow and gain points
 */
 
 void CPlayer::growSnake()
+//TODO: remove function -> increase points within Update()
+// oder besser: umbennen in grow() und Snake::grow() aufrufen?
 { 
 	Points++;
 	grow();
