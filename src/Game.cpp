@@ -46,7 +46,7 @@ void CGame::Init(int resolution)
     SnakeTimer = 0.0f;
 	for (int i=0; i < Players; i++)
 	{
-		if (Names[i] == "bot")
+        if (Names[i] == "bot") //TODO: gebe die Anzahl der Spieler ein und fülle den Rest der Spieler mit Bots auf (insgesamt 5), Bots sammeln zudem keine Punkte
 		{
             Player[i]->setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
 		}
@@ -113,6 +113,7 @@ void CGame::ProcessEvents()
 
 void CGame::Run()
 {
+    //TODO: throw exception if false (add test case too):
     if (!isRunning)
         isRunning = true;
 
@@ -295,7 +296,7 @@ void CGame::Quit()
     SDL_Quit();
 }
 
-bool CGame::isGameOver()
+bool CGame::isGameOver() //TODO: aus dem Namen nicht ersichtlich, dass eine Abfrage auf der Konsole stattfindet
 {
     if (!(Menu->gameOver(doInit, Player, gameTempo))) //TODO: rename -> gameover is misleading
     {

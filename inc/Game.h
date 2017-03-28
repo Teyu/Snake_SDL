@@ -31,7 +31,7 @@ private:
     void ProcessEvents();
     bool isGameOver();
 
-private:
+protected:
     CMenu * Menu;
     CFramework * Framework;
     vector<CPlayer *> Player;
