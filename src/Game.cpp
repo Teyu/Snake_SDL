@@ -201,68 +201,95 @@ void CGame::Control()
 		{
 			for (int j = 0; j < Players; j++)
 			{
-                if (checkCollFoodSnake(i,j)) //TODO: rename checkColl(CFood, CSnake)
+                if (checkCollision(*Player[i], *Food[j]))
 				{
                     Player[i]->growSnake();
+                    SPix[i] = Player[i]->getPos();
                     Food[j]->destroy();
                     spawnFood();
 				}
 			}
         }
 
-        if (checkCollSnakeSnake()) //TODO: rename: checkColl(CSnake, CSnake) and move into loop above
-		{
-			isRunning = false; 
+        for (size_t i = 0; i < Players; i++)
+        {
+            if (checkCollision(*Player[i]))
+            {
+                isRunning = false;
+            }
+            for (size_t j = 0; j < i; j++)
+            {
+                if ((checkCollision(*Player[i], *Player[j]))) //TODO: move into loop above
+                {
+                    isRunning = false;
+                }
+            }
         }
 }
 
 /**************************************************************************************************
 checks collision of snake and food
 */
-
-bool CGame::checkCollFoodSnake(int Plyr, int Foo)
+bool CGame::checkCollision(CSnake &Snake, CFood &Food)
 {
-    for (int i=0; i < SPix[Plyr].size(); i++) //TODO : replace SPix with actual function call
-		{
-            if ((SPix[Plyr][i].x == Food[Foo]->getPos().x) && (SPix[Plyr][i].y == Food[Foo]->getPos().y))
-			{
-				return true;
-			}
-		}
+    for (int i=0; i < Snake.getPos().size(); i++) //TODO : replace with getLength in CSnake
+        {
+            if ((Snake.getPos()[i].x == Food.getPos().x) && (Snake.getPos()[i].y == Food.getPos().y)) // TODO: use ==operator for Rect
+            {
+                return true;
+            }
+        }
 
-	return false;
+    return false;
 }
 
 /**************************************************************************************************
-checks collision of snake with itself or other snakes
+checks collision of snake with itsself
 */
 
-bool CGame::checkCollSnakeSnake()
+bool CGame::checkCollision(CSnake &Snake)
 {
-    vector<SDL_Rect> Heads; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
-	for (int i = 0; i < Players; i++)
-	{
-        Heads.push_back(Player[i]->getPos()[Player[i]->getPos().size() - 1]);
-	}
-
-    for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit ?
+    SDL_Rect Head = Snake.getPos()[Snake.getPos().size() - 1]; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
+    for (int i = 0; i < Snake.getPos().size() - 1; i++)
     {
-        for (int j = 0; j < Players; j++)
+        SDL_Rect currPos = Snake.getPos()[i];
+        if ((currPos.x == Head.x)
+            && (currPos.y == Head.y)) //TODO: überlade ==operator für Rect
         {
-             for (int k = 0; k < Player[i]->getPos().size(); k++)
-             {
-                if ((Player[i]->getPos()[k].x == Heads[j].x)
-                    && (Player[i]->getPos()[k].y == Heads[j].y)) //TODO: überlade ==operator für Rect
-                {
-                    if (i == j) //its own Head
-                        break;
-                    return true;
-                }
-            }
+            return true;
+        }
+    }
+    return false;
+}
+
+/**************************************************************************************************
+checks collision of snake with other snake
+*/
+
+bool CGame::checkCollision(CSnake &Snake1, CSnake &Snake2)
+{
+    SDL_Rect Head1 = Snake1.getPos()[Snake1.getPos().size() - 1]; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
+    SDL_Rect Head2 = Snake2.getPos()[Snake2.getPos().size() - 1];
+
+    for (int i = 0; i < Snake1.getPos().size(); i++)
+    {
+        if ((Snake1.getPos()[i].x == Head2.x)
+            && (Snake1.getPos()[i].y == Head2.y)) //TODO: überlade ==operator für Rect
+        {
+            return true;
         }
     }
 
-	return false;
+    for (int i = 0; i < Snake2.getPos().size(); i++)
+    {
+        if ((Snake2.getPos()[i].x == Head1.x)
+            && (Snake2.getPos()[i].y == Head1.y))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**************************************************************************************************
@@ -276,7 +303,7 @@ void CGame::spawnFood()
             Food[i]->spawn();
 			for (int j = 0; j < Players; j++)
 			{
-                while(checkCollFoodSnake(i, j))
+                while(checkCollision(*Player[i], *Food[j]))
 				{
                     Food[j]->destroy();
                     Food[j]->spawn();

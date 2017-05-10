@@ -57,6 +57,5 @@ TEST(FoodTest, spawnNewFormWhenPreviousNoLongerExistsTest)
     ASSERT_TRUE(Food.spawn());
     auto newPos = Food.getPos();
 
-    ASSERT_NE(prevPos.x, newPos.x); //TODO: implement ==operator for SDL_Rect
-    ASSERT_NE(prevPos.y, newPos.y); //auf diese Weise falsch, da nmindestens eins der beiden ungleich sein muss
+    ASSERT_FALSE((prevPos.x == newPos.x) && (prevPos.y == newPos.y)); //TODO: implement ==operator for SDL_Rects
 }

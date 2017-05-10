@@ -1,25 +1,15 @@
+
 #include <Game.h>
 
 class CMockGame : public CGame
 {
 public:
     CMockGame(CMenu &menu, CFramework &fw) : CGame(menu, fw) {}
-    void InitCollidingSnakes(uint size);
+    void InitSnake(CSnake &Snake1);
+    void InitSnakes(CSnake &Snake1, CSnake &Snake2);
+    void InitFood(CFood &Food1);
+    void InitFood(CFood &Food1, CFood &Food2);
+    bool doCheckCollision(CSnake &Snake, CFood &Food);
+    bool doCheckCollision(CSnake &Snake);
+    bool doCheckCollision(CSnake &Snake1, CSnake &CSnake2);
 };
-
-void CMockGame::InitCollidingSnakes(uint size)
-{
-    /***************************************
-     *         -->            <--
-     *     |*|*|*|*|#|   |#|*|*|*|*|
-     *
-     ***************************************/
-
-    Player[0]->init(2*size, size, 5, size, direction::right);
-    Player[1]->init(13*size, size, 5, size, direction::left);
-
-    //TODO: remove after SPix has been removed:
-    SPix[0].clear(); SPix[1].clear();
-    SPix[0] = Player[0]->getPos();
-    SPix[1] = Player[1]->getPos();
-}

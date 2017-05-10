@@ -17,14 +17,13 @@ public:
     void setSize(uint newSize);
     void Render();
     bool spawn();
+    void setPos(uint x, uint y);
     void destroy() {isAlive = false;}
 
 private:
     CSprite * m_Sprite;
 	int size;
     bool isAlive;
-
-    void setPos(uint x, uint y);
 };
 
 #endif

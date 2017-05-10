@@ -44,8 +44,9 @@ protected:
     vector<vector<SDL_Rect>> SPix; //TODO: nicht nötig, kann über CPlayer abgefragt werden
     bool doInit;
 
-    bool checkCollFoodSnake( int Plyr, int Foo);
-    bool checkCollSnakeSnake();
+    bool checkCollision(CSnake &Snake, CFood &Food);
+    bool checkCollision(CSnake &Snake);
+    bool checkCollision(CSnake &Snake1, CSnake &Snake2);
     void spawnFood();
 
     // TODO: Für die KI: ACHTUNG: Funktioniert nur für einen Bot (müsste noch als Klasse ausgelagert werden)

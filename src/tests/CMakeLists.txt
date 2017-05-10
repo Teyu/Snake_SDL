@@ -9,6 +9,8 @@ include_directories(
 
 set (UNIT_TEST_SRC
   ${CMAKE_SOURCE_DIR}/src/tests/FoodTest.cpp
+  ${CMAKE_SOURCE_DIR}/src/tests/MockGame.cpp
+  ${CMAKE_SOURCE_DIR}/src/tests/MockSnake.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/PlayerTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/CollisionTest.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/SnakeTest.cpp
@@ -17,6 +19,7 @@ set (UNIT_TEST_SRC
 )
 
 set (SYSTEM_TEST_SRC
+  ${CMAKE_SOURCE_DIR}/src/tests/MockGame.cpp
   ${CMAKE_SOURCE_DIR}/src/tests/SystemTest.cpp
 )
 

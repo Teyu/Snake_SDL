@@ -168,7 +168,17 @@ TEST_F(GameTest, testRunAndTriggerGameOver)
 
     CMockGame Game(MockMenu, *g_pFramework);
     Game.Init(size);
-    Game.InitCollidingSnakes(size);
+
+    /***************************************
+     *         -->            <--
+     *     |*|*|*|*|#|   |#|*|*|*|*|
+     *
+     ***************************************/
+    CSnake Snake1, Snake2;
+    Snake1.init(2*size, size, 5, size, direction::right);
+    Snake2.init(13*size, size, 5, size, direction::left);
+    Game.InitSnakes(Snake1, Snake2);
+
     ASSERT_TRUE(Game.isRunning);
     for (size_t i = 0; i < 200; i++)
     {
@@ -307,7 +317,17 @@ TEST_F(GameTest, testRunTriggerGameOverAndRestart)
 
     CMockGame Game(MockMenu, *g_pFramework);
     Game.Init(size);
-    Game.InitCollidingSnakes(size);
+
+    /***************************************
+     *         -->            <--
+     *     |*|*|*|*|#|   |#|*|*|*|*|
+     *
+     ***************************************/
+    CSnake Snake1, Snake2;
+    Snake1.init(2*size, size, 5, size, direction::right);
+    Snake2.init(13*size, size, 5, size, direction::left);
+    Game.InitSnakes(Snake1, Snake2);
+
     for (size_t i = 0; i < 200; i++)
     {
         EXPECT_CALL(MockMenu, checkbackPlayers())
