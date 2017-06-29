@@ -4,7 +4,7 @@
 
 TEST(FoodTest, setSizeTest) //TODO: can be removed later
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     uint size = 10u;
 
     Food.setSize(size);
@@ -14,7 +14,7 @@ TEST(FoodTest, setSizeTest) //TODO: can be removed later
 
 TEST(FoodTest, DISABLED_setSizeTooSmallTest) //TODO: can be removed later
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     uint size = 0u;
 
     Food.setSize(size);
@@ -24,7 +24,7 @@ TEST(FoodTest, DISABLED_setSizeTooSmallTest) //TODO: can be removed later
 
 TEST(FoodTest, spawnFormWithinScreenBordersTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
 
     auto Pos = Food.getPos();
@@ -36,7 +36,7 @@ TEST(FoodTest, spawnFormWithinScreenBordersTest)
 
 TEST(FoodTest, spawnNewFormWhenPreviousStillExistsTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
     auto prevPos = Food.getPos();
 
@@ -49,7 +49,7 @@ TEST(FoodTest, spawnNewFormWhenPreviousStillExistsTest)
 
 TEST(FoodTest, spawnNewFormWhenPreviousNoLongerExistsTest)
 {
-    CFood Food;
+    CFood Food(*g_pFramework);
     ASSERT_TRUE(Food.spawn());
     auto prevPos = Food.getPos();
 
@@ -57,6 +57,5 @@ TEST(FoodTest, spawnNewFormWhenPreviousNoLongerExistsTest)
     ASSERT_TRUE(Food.spawn());
     auto newPos = Food.getPos();
 
-    ASSERT_NE(prevPos.x, newPos.x); //TODO: implement ==operator for SDL_Rect
-    ASSERT_NE(prevPos.y, newPos.y); //auf diese Weise falsch, da nmindestens eins der beiden ungleich sein muss
+    ASSERT_FALSE((prevPos.x == newPos.x) && (prevPos.y == newPos.y)); //TODO: implement ==operator for SDL_Rects
 }

@@ -8,11 +8,11 @@ void CGame::Init(int resolution)
 {
     if (doInit)
     {
-        Players = Menu.checkbackPlayers(); //TODO: checkbackPlayers should return std::vector<CPlayer>
-        Names = Menu.checkbackNames(Players); //TODO: can be removed than
-        gameTempo = Menu.checkbackTempo();
+        Players = Menu->checkbackPlayers(); //TODO: checkbackPlayers should return std::vector<CPlayer>
+        Names = Menu->checkbackNames(Players); //TODO: can be removed than
+        gameTempo = Menu->checkbackTempo();
 
-        Menu.gameStart();
+        Menu->gameStart();
     }
 
     isColl = false;
@@ -22,40 +22,39 @@ void CGame::Init(int resolution)
     Player.resize(Players);
 	for (int i = 0; i < Players; i++)
 	{
-        //CPlayer P;
-        //Player.push_back(P); //ruft constructor, copy-constructor und destructor auf, wenn ein temporäres Objekt gepusht wird
-		Player[i].name = Names[i];
+        Player[i] = new CPlayer(*Framework);
+        Player[i]->name = Names[i];
         //TODO: new function: setupStartPositions
 		const int startLength = 5;
 		switch (i)
 		{
 		case 0:  //Spieler 1 startet in der linken oberen Ecke
-            Player[i].Init(SDLK_LEFT, SDLK_RIGHT,0,3*resolution, direction::right, resolution);
+            Player[i]->Init(SDLK_LEFT, SDLK_RIGHT,0,3*resolution, direction::right, resolution);
 			//Er steuert mit den Pfeiltasten links/rechts
 			break;
 		case 1: //Spieler 2 startet am unteren Bildschirmrand in der Mitte
-            Player[i].Init(SDLK_a, SDLK_d, 400-resolution*startLength, 600-resolution, direction::right, resolution);
+            Player[i]->Init(SDLK_a, SDLK_d, 400-resolution*startLength, 600-resolution, direction::right, resolution);
 			//Er steuert mit A und D
 			break;
 		case 2: //Spieler 3 startet am rechten Rand in der Mitte 
-            Player[i].Init(SDLK_k, SDLK_l,800-resolution*startLength, 300-resolution, direction::left, resolution);
+            Player[i]->Init(SDLK_k, SDLK_l,800-resolution*startLength, 300-resolution, direction::left, resolution);
 			//Er steuert mit K und L
 			break;
 		}
-        SPix.push_back(Player[i].getPos()); //TODO: wird SPix benötigt?
+        SPix.push_back(Player[i]->getPos()); //TODO: wird SPix benötigt?
 	} 	
-	SnakeTimer = 0.0f;
+    SnakeTimer = 0.0f;
 	for (int i=0; i < Players; i++)
 	{
-		if (Names[i] == "bot")
+        if (Names[i] == "bot") //TODO: gebe die Anzahl der Spieler ein und fülle den Rest der Spieler mit Bots auf (insgesamt 5), Bots sammeln zudem keine Punkte
 		{
-            Player[i].setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
+            Player[i]->setKI(true); //TODO: wenn CBot von CSnake erbt können CPlayer und CBot beide als CSnakes behandelt werden (Polymorphie)
 		}
-	}
+    }
 
 
     // TODO: new function setResolution
-    //TODO: remove magic numbers 800 und 600
+    // TODO: remove magic numbers 800 und 600
     if (((800%resolution) !=0) || ((600%resolution) !=0))
 	{
         m_resolution = 10;
@@ -68,11 +67,13 @@ void CGame::Init(int resolution)
     Food.resize(Players);
 	for (int i=0; i < Players; i++)
     {
-        Food[i].setSize(resolution);
+        Food[i] = new CFood(*Framework);
+        Food[i]->setSize(resolution);
 	}
     spawnFood();
 
-    g_pFramework->Init(800, 600, 16, false);
+    Framework->Init(800, 600, 16, false);
+    isRunning = true; //TODO: umbennenen (misleading)
 }
 
 /**************************************************************************************************
@@ -82,7 +83,7 @@ render Scene
 void CGame::Render()
 {
     for (size_t i = 0; i < Food.size(); i++)
-        Food[i].Render();
+        Food[i]->Render();
 }
 
 /****************************************************************************************************************************************************
@@ -91,6 +92,12 @@ verify if a button is pressed to quit the game
 
 void CGame::ProcessEvents()
 {
+    if (Framework->KeyDown(SDLK_ESCAPE))
+    {
+        isRunning = false;
+        return;
+    }
+
     SDL_Event Event;
     if (SDL_PollEvent ( &Event))
     {
@@ -100,41 +107,39 @@ void CGame::ProcessEvents()
             {
                 isRunning = false;
             } break;
-        case (SDL_KEYDOWN):
-            {
-                if (Event.key.keysym.sym == SDLK_ESCAPE)
-                {
-                    isRunning = false;
-                }
-            }break;
         }
     }
 }
 
 void CGame::Run()
 {
-    while (isRunning)
+    //TODO: throw exception if false (add test case too):
+    if (!isRunning)
+        isRunning = true;
+
+    ProcessEvents();
+
+    Framework->Update();
+    Framework->Clear();
+
+    Update();
+
+    Control(); //TODO: Control -> Update
+    vector<vector<SDL_Rect>> SnakePos = getSnakePos();
+    vector<SDL_Rect> FoodPos = getFoodPos();
+
+    Framework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
+
+    Render();
+    Framework->Flip();
+
+    if (!isRunning)
     {
-        ProcessEvents();
-
-        g_pFramework->Update();
-        g_pFramework->Clear();
-
-        Update();
-        Control(); //TODO: Control -> Update
-        vector<vector<SDL_Rect>> SnakePos = getSnakePos();
-        vector<SDL_Rect> FoodPos = getFoodPos();
-
-        g_pFramework->drawScene(SnakePos, FoodPos); //TODO: warum funktioniert das nicht direkt?
-
-        Render();
-        g_pFramework->Flip();
-    }
-
-    if (!Quit())
-    {
-        Init(10);
-        Run();
+        Quit();
+        if (!isGameOver())
+        {
+            Init(10);
+        }
     }
 }
 
@@ -144,20 +149,18 @@ updates the timer, the keyboard input and the position of the Snakes
 
 void CGame::Update()
 {
-        timer.update();
-
         for (int i = 0; i < Players; i++)
 		{
-			Player[i].Update();
-            if (Player[i].isKI()) // TODO: can be removed, wenn CBot : CSnake
+            Player[i]->Update();
+            if (Player[i]->isKI()) // TODO: can be removed, wenn CBot : CSnake
             {
-                doKI(Player[i]);
+                doKI(*Player[i]);
 			}
 		}
 
 		for (int i = 0; i < Players; i++)
         {
-            SPix[i] = Player[i].getPos(); // TODO. nicht notwendig
+            SPix[i] = Player[i]->getPos(); // TODO. nicht notwendig
         }
 }
 
@@ -167,29 +170,29 @@ coordinates the Players' movements
 
 void CGame::Control()
 {
-		SnakeTimer += timer.GetElapsed();
+        SnakeTimer += g_pTimer->GetElapsed();
 		if (SnakeTimer > gameTempo)
 		{
             //TEST:
-			for (int i = 0; i < Players; i++)
+            for (int i = 0; i < Players; i++)
             {
-				if ((UTurn == false) || (Player[i].isKI() == false))
+                if ((UTurn == false) || (Player[i]->isKI() == false))
+                {
+                    Player[i]->move();
+                } else if ((Player[i]->isKI()) && (UTurn))
 				{
-					Player[i].move();
-				} else if ((Player[i].isKI()) && (UTurn))
-				{
-					if (Utimer < 2)
+                    if (Utimer < 2)
 					{
-						Player[i].move();
+                        Player[i]->move();
 						Utimer++;
 					} else
 					{
-						Player[i].changeDirection(UDir);
+                        Player[i]->changeDirection(UDir);
 						Utimer = 0;
 						UTurn = false;
-					}
+                    }
                 }
-			}
+            }
             //ENDETEST
         SnakeTimer = 0.0f;
         }
@@ -198,68 +201,95 @@ void CGame::Control()
 		{
 			for (int j = 0; j < Players; j++)
 			{
-                if (checkCollFoodSnake(i,j)) //TODO: rename checkColl(CFood, CSnake)
+                if (checkCollision(*Player[i], *Food[j]))
 				{
-					Player[i].growSnake();
-					Food[j].destroy();
+                    Player[i]->growSnake();
+                    SPix[i] = Player[i]->getPos();
+                    Food[j]->destroy();
                     spawnFood();
 				}
 			}
         }
 
-        if (checkCollSnakeSnake()) //TODO: rename: checkColl(CSnake, CSnake) and move into loop above
-		{
-			isRunning = false; 
+        for (size_t i = 0; i < Players; i++)
+        {
+            if (checkCollision(*Player[i]))
+            {
+                isRunning = false;
+            }
+            for (size_t j = 0; j < i; j++)
+            {
+                if ((checkCollision(*Player[i], *Player[j]))) //TODO: move into loop above
+                {
+                    isRunning = false;
+                }
+            }
         }
 }
 
 /**************************************************************************************************
 checks collision of snake and food
 */
-
-bool CGame::checkCollFoodSnake(int Plyr, int Foo)
+bool CGame::checkCollision(CSnake &Snake, CFood &Food)
 {
-    for (int i=0; i < SPix[Plyr].size(); i++) //TODO : replace SPix with actual function call
-		{
-			if ((SPix[Plyr][i].x == Food[Foo].getPos().x) && (SPix[Plyr][i].y == Food[Foo].getPos().y))
-			{
-				return true;
-			}
-		}
+    for (int i=0; i < Snake.getPos().size(); i++) //TODO : replace with getLength in CSnake
+        {
+            if ((Snake.getPos()[i].x == Food.getPos().x) && (Snake.getPos()[i].y == Food.getPos().y)) // TODO: use ==operator for Rect
+            {
+                return true;
+            }
+        }
 
-	return false;
+    return false;
 }
 
 /**************************************************************************************************
-checks collision of snake with itself or other snakes
+checks collision of snake with itsself
 */
 
-bool CGame::checkCollSnakeSnake()
+bool CGame::checkCollision(CSnake &Snake)
 {
-    vector<SDL_Rect> Heads; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
-	for (int i = 0; i < Players; i++)
-	{
-		Heads.push_back(Player[i].getPos()[Player[i].getPos().size() - 1]);
-	}
-
-    for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit ?
+    SDL_Rect Head = Snake.getPos()[Snake.getPos().size() - 1]; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
+    for (int i = 0; i < Snake.getPos().size() - 1; i++)
     {
-        for (int j = 0; j < Players; j++)
+        SDL_Rect currPos = Snake.getPos()[i];
+        if ((currPos.x == Head.x)
+            && (currPos.y == Head.y)) //TODO: überlade ==operator für Rect
         {
-             for (int k = 0; k < Player[i].getPos().size(); k++)
-             {
-                if ((Player[i].getPos()[k].x == Heads[j].x)
-                    && (Player[i].getPos()[k].y == Heads[j].y)) //TODO: überlade ==operator für Rect
-                {
-                    if (i == j) //its own Head
-                        break;
-                    return true;
-                }
-            }
+            return true;
+        }
+    }
+    return false;
+}
+
+/**************************************************************************************************
+checks collision of snake with other snake
+*/
+
+bool CGame::checkCollision(CSnake &Snake1, CSnake &Snake2)
+{
+    SDL_Rect Head1 = Snake1.getPos()[Snake1.getPos().size() - 1]; //TODO: ertselle membervariable in CSnake m_Head -> then remove:
+    SDL_Rect Head2 = Snake2.getPos()[Snake2.getPos().size() - 1];
+
+    for (int i = 0; i < Snake1.getPos().size(); i++)
+    {
+        if ((Snake1.getPos()[i].x == Head2.x)
+            && (Snake1.getPos()[i].y == Head2.y)) //TODO: überlade ==operator für Rect
+        {
+            return true;
         }
     }
 
-	return false;
+    for (int i = 0; i < Snake2.getPos().size(); i++)
+    {
+        if ((Snake2.getPos()[i].x == Head1.x)
+            && (Snake2.getPos()[i].y == Head1.y))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**************************************************************************************************
@@ -270,13 +300,13 @@ void CGame::spawnFood()
 {
         for (int i = 0; i < Players; i++) //TODO: foreach schleife für bessere lesbarkeit
 		{
-            Food[i].spawn();
+            Food[i]->spawn();
 			for (int j = 0; j < Players; j++)
 			{
-                while(checkCollFoodSnake(i, j))
+                while(checkCollision(*Player[i], *Food[j]))
 				{
-					Food[j].destroy();
-                    Food[j].spawn();
+                    Food[j]->destroy();
+                    Food[j]->spawn();
 				}
 			}
         }
@@ -287,28 +317,35 @@ quits the game, opens the menu and restarts the game or shuts it down based on t
 Returns true if the user wants to end the game, otherwise returns false
 */
 
-bool CGame::Quit()
+void CGame::Quit()
 {
     SDL_Delay(700);
     SDL_Quit();
 
-    if ((Menu.gameOver(doInit, Player, gameTempo)) == false) //TODO: rename -> gameover is misleading
+    isRunning = false;
+}
+
+bool CGame::isGameOver() //TODO: aus dem Namen nicht ersichtlich, dass eine Abfrage auf der Konsole stattfindet
+{
+    if (!(Menu->gameOver(doInit, Player, gameTempo))) //TODO: rename -> gameover is misleading
     {
         for (int i=0; i < Players; i++)
-		{
-			Player[i].destroy();
+        {
+            Player[i]->destroy();
+            free(Player[i]);
+            free(Food[i]);
         }
         Food.clear();
         Player.clear();
-		SPix.clear();
+        SPix.clear();
 
-		isRunning = true;
+        isRunning = true;
 
-		return false;
-	} else
-	{
-		isRunning = false;
-		return true;
+        return false;
+    } else
+    {
+        isRunning = false;
+        return true;
     }
 }
 
@@ -321,7 +358,7 @@ vector<SDL_Rect> CGame::getFoodPos()
     vector<SDL_Rect> ret;
     for (int i=0; i< Players; i++)
 	{
-        ret.push_back(Food[i].getPos());
+        ret.push_back(Food[i]->getPos());
 	}
 
     return ret;
@@ -569,14 +606,14 @@ void CGame::doKI( CPlayer &Bot)
     {
 		//Wenn die Gefahr einer Kollision nicht besteht, 
 		//lasse den Bot auf Futtersuche gehen:
-        CFood *nearest = &Food[0]; //Jage dabei das nächstgelegene!
+        CFood *nearest = Food[0]; //Jage dabei das nächstgelegene!
 		for (int i = 0; i < Players; i++)
 		{
 			if ((Players > 1) &&
-				(abs(Food[i].getPos().x - Head.x) + abs(Food[i].getPos().y - Head.y) 
+                (abs(Food[i]->getPos().x - Head.x) + abs(Food[i]->getPos().y - Head.y)
                 < (abs(nearest->getPos().x - Head.x) + abs(nearest->getPos().y - Head.y))))
 			{
-                nearest = &Food[i];
+                nearest = Food[i];
 			}
 		}
         goForFood(*nearest, Bot);
@@ -590,7 +627,7 @@ bool CGame::isFull(SDL_Rect Pix)
 	for (int p = 0; p < Players; p++)
 	{
 		//gehe alle Pixel der einzelnen Spieler durch:
-		for (int i = 0; i < Player[p].getPos().size(); i++)
+        for (int i = 0; i < Player[p]->getPos().size(); i++)
 		{
 			if ((SPix[p][i].x == Pix.x) && (SPix[p][i].y == Pix.y))
 			{

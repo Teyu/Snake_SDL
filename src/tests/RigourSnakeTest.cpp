@@ -4,8 +4,8 @@
 
 TEST(RigourSnakeTests, moveWithDirectionRight)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::right);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::right);
 
     auto refPos = Snake.getPos();
     refPos.erase(refPos.begin());
@@ -20,8 +20,8 @@ TEST(RigourSnakeTests, moveWithDirectionRight)
 
 TEST(RigourSnakeTests, moveWithDirectionLeft)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::left);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::left);
 
     auto refPos = Snake.getPos();
     refPos.erase(refPos.begin());
@@ -36,8 +36,8 @@ TEST(RigourSnakeTests, moveWithDirectionLeft)
 
 TEST(RigourSnakeTests, moveWithDirectionUp)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::up);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::up);
 
     auto refPos = Snake.getPos();
     refPos.erase(refPos.begin());
@@ -52,8 +52,8 @@ TEST(RigourSnakeTests, moveWithDirectionUp)
 
 TEST(RigourSnakeTests, moveWithDirectionDown)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::down);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::down);
 
     auto refPos = Snake.getPos();
     refPos.erase(refPos.begin());
@@ -68,8 +68,8 @@ TEST(RigourSnakeTests, moveWithDirectionDown)
 
 TEST(RigourSnakeTests, growWithDirectionRight)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::right);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::right);
 
     auto refPos = Snake.getPos();
     refPos.push_back(refPos.back());
@@ -83,8 +83,8 @@ TEST(RigourSnakeTests, growWithDirectionRight)
 
 TEST(RigourSnakeTests, growWithDirectionLeft)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::left);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::left);
 
     auto refPos = Snake.getPos();
     refPos.push_back(refPos.back());
@@ -98,8 +98,8 @@ TEST(RigourSnakeTests, growWithDirectionLeft)
 
 TEST(RigourSnakeTests, growWithDirectionUp)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::up);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::up);
 
     auto refPos = Snake.getPos();
     refPos.push_back(refPos.back());
@@ -113,8 +113,8 @@ TEST(RigourSnakeTests, growWithDirectionUp)
 
 TEST(RigourSnakeTests, growWithDirectionDown)
 {
-    MockSnake Snake;
-    Snake.Init(10u, direction::down);
+    CMockSnake Snake;
+    Snake.InitRigourSnakeTest(10u, direction::down);
 
     auto refPos = Snake.getPos();
     refPos.push_back(refPos.back());

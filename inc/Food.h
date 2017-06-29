@@ -11,19 +11,19 @@ using namespace std;
 class CFood
 {
 public:
-    CFood();
-    SDL_Rect getPos() { return m_Sprite.GetRect();} //REMOVE
+    CFood(CFramework &fw);
+    ~CFood() {delete m_Sprite;}
+    SDL_Rect getPos() { return m_Sprite->GetRect();} //REMOVE
     void setSize(uint newSize);
     void Render();
     bool spawn();
+    void setPos(uint x, uint y);
     void destroy() {isAlive = false;}
 
 private:
-    CSprite m_Sprite;
+    CSprite * m_Sprite;
 	int size;
     bool isAlive;
-
-    void setPos(uint x, uint y);
 };
 
 #endif

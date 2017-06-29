@@ -1,16 +1,17 @@
 #include "Food.h"
 #include <SnakeConfig.h>
 
-CFood::CFood() 
-{ 
-	isAlive = false; 
-    m_Sprite.SetPos(0,0);
+CFood::CFood(CFramework &fw)
+{
+    isAlive = false;
+    m_Sprite = new CSprite(fw);
+    m_Sprite->SetPos(0,0);
     size = 1;
 
 	time_t t;
     srand( time(&t) );
 
-    m_Sprite.Load(getDataDir() + "/cherryAtNight.bmp");
+    m_Sprite->Load(getDataDir() + "/cherryAtNight.bmp");
 }
 
 /**************************************************************************************************
@@ -19,7 +20,7 @@ render food
 
 void CFood::Render()
 {
-    m_Sprite.Render();
+    m_Sprite->Render();
 }
 
 /**************************************************************************************************
@@ -30,7 +31,7 @@ void CFood::setPos(uint x, uint y)
 {
     uint posX = x > 800 - size ? 800 - size : x;
     uint posY = y > 600 - size ? 600 - size : y;
-    m_Sprite.SetPos((float) posX, (float) posY);
+    m_Sprite->SetPos((float) posX, (float) posY);
 }
 
 /**************************************************************************************************

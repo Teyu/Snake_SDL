@@ -21,6 +21,7 @@ void CSnake::init(uint Px, uint Py, uint len, uint s, direction dir)
     Temp.h = size;
     Temp.w = size;
 
+    Pos.clear();
     for (int i=0; i< length; i++)
     {
         Pos.push_back(Temp);

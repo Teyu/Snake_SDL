@@ -19,11 +19,15 @@ int main( int argc, char *argv[])
     cout << "Player 2 (blue) uses the keys A and D." << endl;
     cout << "Player 3 (yellow) uses the keys L and K." << endl << endl;
 
-    CGame Game;
+    CRealMenu Menu;
+    CGame Game(Menu, *g_pFramework);
 
     Game.Init(10);
-    Game.Run();
-    //Game.Quit(); //TODO: uncomment after restruction (until schleife ?)
+    while (Game.isRunning)
+    {
+        Game.Run();
+    }
+    //Game.Quit();
 
     g_pFramework->Quit(); //TODO: nach CGame verlagern
     g_pFramework->Del();

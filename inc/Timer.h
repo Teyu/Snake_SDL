@@ -2,8 +2,11 @@
 #define TIMER_H
 
 #include <SDL.h>
+#include <Singleton.h>
 
-class CTimer
+#define g_pTimer CTimer::Get()
+
+class CTimer : public TSingleton<CTimer>
 {
 public:
     CTimer();

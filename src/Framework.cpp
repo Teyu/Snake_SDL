@@ -4,7 +4,7 @@
 initialise
 */
 
-bool CFramework::Init(int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen) //TODO: remove bFullScreen
+bool CRealFramework::Init(int ScreenWidth, int ScreenHeight, int ColorDepth, bool bFullscreen) //TODO: remove bFullScreen
 {
     if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER) == -1)
     {
@@ -31,7 +31,7 @@ bool CFramework::Init(int ScreenWidth, int ScreenHeight, int ColorDepth, bool bF
 /**************************************************************************************************
 generates a full screen, return true when succeeded otherwise false
 */
-bool CFramework::setFullscreen() //TODO: Hand over colordepth (see above)
+bool CRealFramework::setFullscreen() //TODO: Hand over colordepth (see above)
 {
     int ColorDepth = 16;
 
@@ -56,18 +56,19 @@ bool CFramework::setFullscreen() //TODO: Hand over colordepth (see above)
 shut down framework
 */
 
-void CFramework::Quit()
+void CRealFramework::Quit()
 {
 	SDL_Quit();
+    g_pTimer->Del();
 }
 
 /****************************************************************************************************************************************************
 update framework
 */
 
-void CFramework::Update()
+void CRealFramework::Update()
 {
-    m_timer.update();
+    g_pTimer->update();
 	SDL_PumpEvents();
 }
 
@@ -75,7 +76,7 @@ void CFramework::Update()
 verify if a certain key is pressed
 */
 
-bool CFramework::KeyDown( int Key_ID)
+bool CRealFramework::KeyDown( int Key_ID)
 {
 	return (m_pKeystate[Key_ID] ? true : false);
 }
@@ -84,7 +85,7 @@ bool CFramework::KeyDown( int Key_ID)
 clear framework
 */
 
-void CFramework::Clear()
+void CRealFramework::Clear()
 {
     SDL_FillRect (m_pScreen, NULL, SDL_MapRGB (m_pScreen->format, 0, 0, 0));
 }
@@ -93,16 +94,26 @@ void CFramework::Clear()
 display on screen
 */
 
-void CFramework::Flip()
+void CRealFramework::Flip()
 {
 	SDL_Flip(m_pScreen);
+}
+
+/****************************************************************************************************************************************************
+copies image to screen
+*/
+
+void CRealFramework::BlitSurface( SDL_Surface &Image, SDL_Rect &Rect)
+{
+    //TODO: prüfe vorher, dass m_pImage, m_pScreen gesetzt sind, sonst werfe Error
+    SDL_BlitSurface(&Image, NULL, m_pScreen, &Rect);
 }
 
 /**************************************************************************************************
 paint rectangle on screen
 */
 
-void CFramework::paintRect(SDL_Rect Rec, Uint8 R, Uint8 G, Uint8 B)
+void CRealFramework::paintRect(SDL_Rect Rec, Uint8 R, Uint8 G, Uint8 B)
 {
     SDL_FillRect(m_pScreen, &Rec, SDL_MapRGB(m_pScreen->format, R ,G ,B));
 }
@@ -111,7 +122,7 @@ void CFramework::paintRect(SDL_Rect Rec, Uint8 R, Uint8 G, Uint8 B)
 draw snakes and food
 */
 
-void CFramework::drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> &FoodPos)
+void CRealFramework::drawScene(vector<vector<SDL_Rect>> &SnakePos, vector<SDL_Rect> &FoodPos)
 {
     //draw snakes
     for (int p = 0; p < SnakePos.size(); p++)

@@ -12,6 +12,7 @@ enum direction{up, down, right, left};
 class CSnake
 {
 public:
+    virtual ~CSnake(){}
     CSnake(){ length = 0; d = direction::right; prevD = direction::up; size = 0;}
     void init(uint Px, uint Py, uint len, uint s, direction dir);  //TODO: s?
     void Render();

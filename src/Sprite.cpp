@@ -1,15 +1,6 @@
 #include "Sprite.h"
 
 /****************************************************************************************************************************************************
-constructor
-*/
-
-CSprite::CSprite()
-{
-    m_pImage = NULL;
-}
-
-/****************************************************************************************************************************************************
 destructor
 */
 
@@ -35,7 +26,7 @@ void CSprite::Load( const string sFilename)
 		cout << endl;
         cout << "Error message: " << SDL_GetError() << endl;
 
-		g_pFramework->Quit();
+        m_pFramework->Quit();
 		exit(1);
     }
 
@@ -63,21 +54,11 @@ render  (caution: framework has to be initialized!)
 
 void CSprite::Render()
 {
-    try //TODO: entferne try,catch anweisung hier -> überflüssig
+    if ((m_Rect.x < 0) || (m_Rect.y < 0))
     {
-        if ((m_Rect.x < 0) || (m_Rect.y < 0))
-        {
-            throw "could not render sprite: invalid position";
-        }
-    }catch(const char * msg)
-    {
-        cerr << msg << endl;
-
-        g_pFramework->Quit();
-        exit(1);
+        throw "could not render sprite: invalid position";
     }
 
-    //TODO: prüfe vorher, dass m_pImage, m_pScreen gesetzt sind, sonst werfe Error
-    m_pScreen = g_pFramework->GetScreen();
-    SDL_BlitSurface(m_pImage, NULL, m_pScreen, &m_Rect);
+    //TODO: prüfe vorher, dass m_pImage gesetzt ist, sonst werfe Error
+    m_pFramework->BlitSurface(*m_pImage, m_Rect);
 }

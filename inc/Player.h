@@ -9,7 +9,8 @@ using namespace std;
 class CPlayer: public CSnake
 {
 public:
-    CPlayer() { KI = false;}
+    ~CPlayer(){}
+    CPlayer(CFramework &fw) { KI = false; m_pFramework = &fw;}
 
     void Init(int KeyL, int KeyR, int startPosX, int startPosY, direction startDir, int res);
 	void Update();
@@ -18,13 +19,13 @@ public:
     void setKI(bool nKI) {KI = nKI;} // TODO: neue Klasse CBot:CSnake (lagere gemeinsame Eigenschaften nach CSnake aus)
 	bool isKI() { return KI;}
 
-	string name;
+    string name; //TODO: initialize with "Player"
 
 private:
-	int Points;
-	bool KeyLock; 
-	bool growLock;
-	int KeyLeft;
+    CFramework * m_pFramework;
+    int Points;
+    bool KeyLock;
+    int KeyLeft; //TODO: initialize
 	int KeyRight;
     bool KI;
 };
